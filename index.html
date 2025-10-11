@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+
+    <link rel="shortcut icon" href="https://cdn.iconscout.com/icon/free/png-256/free-code-forces-logo-icon-svg-download-png-2944796.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codeforces Practice Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            850: '#182030',
+                            900: '#121826',
+                        },
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* bg-gray-50 */
+        }
+        .dark body {
+            background-color: #121826; /* bg-gray-900 */
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        .dark ::-webkit-scrollbar-track { background: #182030; }
+        html ::-webkit-scrollbar-track { background: #e5e7eb; }
+        .dark ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
+        html ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #718096; }
+        html ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .dark .card {
+            background-color: #182030; /* bg-gray-850 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        #progress-bar { transition: width 0.3s ease-in-out; }
+        .form-input {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .dark .form-input {
+            background-color: #121826;
+            border-color: #4a5568;
+        }
+        .form-input:focus {
+             outline: none;
+             border-color: #4f46e5;
+             box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+        }
+        .dark .sortable:hover { background-color: #2d3748; }
+        html .sortable:hover { background-color: #f3f4f6; }
+        .sort-icon { opacity: 0.5; transition: opacity 0.2s ease-in-out; }
+        .sortable:hover .sort-icon { opacity: 1; }
+        .sort-icon.active { opacity: 1; }
+        .clickable-tag { cursor: pointer; transition: background-color 0.2s; }
+        .dark .clickable-tag:hover { background-color: #4f46e5; }
+        html .clickable-tag:hover { background-color: #4f46e5; color: white; }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-700 dark:text-gray-300">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="mb-10">
+            <div class="flex justify-between items-center mb-4">
+                 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">CF Dashboard</h1>
+                 <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                     <svg id="theme-icon-light" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                     <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                 </button>
+            </div>
+            <div id="mini-profile-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </header>
+
+        <main class="grid grid-cols-1">
+             <!-- Control Panel Full Width -->
+            <div class="card p-6 mb-8">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Control Panel</h2>
+                <form id="control-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Division</label><select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>Div. 1</option><option selected>Div. 2</option><option>Div. 3</option><option>Div. 4</option><option>Div. 1 + Div. 2</option><option>Educational</option><option>CodeTON</option><option>Global</option><option>Kotlin</option><option>VK Cup</option></select></div>
+                    <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Index</label><select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option></select></div>
+                    <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Problems</label><input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Your Handle</label><input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="lg:col-span-1"><label for="compare-handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Compare Handle</label><input type="text" name="compare-handle" id="compare-handle" placeholder="e.g., Petr" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="lg:col-span-1 grid grid-cols-2 gap-2"><button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Fetch</button><button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Reset</button></div>
+                </form>
+            </div>
+
+            <!-- Analytical Part -->
+            <div id="analytics-grid" class="grid grid-cols-1 gap-8">
+                <!-- User 1 Analytics -->
+                <div id="analytics-user1" class="space-y-8 hidden animate-fade-in"></div>
+                <!-- User 2 Analytics -->
+                <div id="analytics-user2" class="space-y-8 hidden animate-fade-in"></div>
+            </div>
+
+            <!-- Right Column: Problem List -->
+            <section class="mt-8">
+                <div class="card overflow-hidden">
+                    <div class="p-2 sm:p-6">
+                        <!-- Filters -->
+                        <div id="filters-container" class="mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hidden"><input type="text" id="tag-filter" placeholder="Filter by tag..." class="form-input rounded-md sm:col-span-2 md:col-span-1"><select id="verdict-filter" class="form-input rounded-md"><option value="">All Verdicts</option><option value="Solved">Solved</option><option value="Not Attempted">Not Attempted</option><option value="WRONG ANSWER">Wrong Answer</option></select><input type="number" id="rating-min-filter" placeholder="Min Rating" class="form-input rounded-md"><input type="number" id="rating-max-filter" placeholder="Max Rating" class="form-input rounded-md"></div>
+                        
+                        <div id="initial-message" class="text-center py-20"><svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><h3 class="mt-2 text-lg font-medium text-gray-900 dark:text-white">Ready to Practice?</h3><p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Enter your handle and fetch problems to begin.</p></div>
+                        <div id="loader-container" class="text-center py-20 hidden"><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-4"><div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div></div><p id="progress-text" class="mt-4 text-sm text-gray-500 dark:text-gray-400">Initializing...</p></div>
+                        <div id="error-message" class="text-center py-20 hidden"><svg class="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><h3 class="mt-2 text-lg font-medium text-red-500 dark:text-red-400">An Error Occurred</h3><p class="mt-1 text-sm text-red-600 dark:text-red-500" id="error-text"></p></div>
+                        
+                        <div id="table-container" class="hidden overflow-x-auto">
+                           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead id="problem-table-head" class="bg-gray-50 dark:bg-gray-800"></thead>
+                                <tbody id="problem-table-body" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // DOM Elements
+        const controlForm = document.getElementById('control-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const resetCacheBtn = document.getElementById('reset-cache-btn');
+        const initialMessage = document.getElementById('initial-message');
+        const loaderContainer = document.getElementById('loader-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const tableContainer = document.getElementById('table-container');
+        const problemTableHead = document.getElementById('problem-table-head');
+        const problemTableBody = document.getElementById('problem-table-body');
+        const analyticsGrid = document.getElementById('analytics-grid');
+        const analyticsUser1 = document.getElementById('analytics-user1');
+        const analyticsUser2 = document.getElementById('analytics-user2');
+        const filtersContainer = document.getElementById('filters-container');
+        const tagFilterInput = document.getElementById('tag-filter');
+        const verdictFilterInput = document.getElementById('verdict-filter');
+        const ratingMinInput = document.getElementById('rating-min-filter');
+        const ratingMaxInput = document.getElementById('rating-max-filter');
+        const miniProfileContainer = document.getElementById('mini-profile-container');
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+
+        // Chart instances
+        let charts = {};
+        
+        // --- App State ---
+        let allProblems = [];
+        let userData = {};
+        let currentProblemSelection = [];
+        
+        // --- Settings Management ---
+        let settings = {
+            handle: '',
+            compareHandle: '',
+            division: 'Div. 2',
+            problemIndex: 'D',
+            count: 50,
+            filters: { tag: '', verdict: '', ratingMin: '', ratingMax: '' },
+            sort: { column: 'contestName', direction: 'desc' },
+            theme: 'dark'
+        };
+
+        const saveSettings = () => localStorage.setItem('cfDashboardSettings', JSON.stringify(settings));
+        const loadSettings = () => {
+            const saved = localStorage.getItem('cfDashboardSettings');
+            if (saved) settings = { ...settings, ...JSON.parse(saved) };
+            
+            document.getElementById('handle').value = settings.handle;
+            document.getElementById('compare-handle').value = settings.compareHandle;
+            document.getElementById('contest-division').value = settings.division;
+            document.getElementById('problem-number').value = settings.problemIndex;
+            document.getElementById('num-contests').value = settings.count;
+            Object.keys(settings.filters).forEach(key => {
+                const inputId = `${key.replace('ratingMin', 'rating-min').replace('ratingMax', 'rating-max')}-filter`;
+                const input = document.getElementById(inputId);
+                if (input) input.value = settings.filters[key];
+            });
+            applyTheme();
+        };
+
+        // --- Theme Management ---
+        const applyTheme = () => {
+            if (settings.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeIconDark.classList.remove('hidden');
+                themeIconLight.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIconLight.classList.remove('hidden');
+                themeIconDark.classList.add('hidden');
+            }
+        };
+        themeToggle.addEventListener('click', () => {
+            settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+            applyTheme();
+            saveSettings();
+        });
+
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', loadSettings);
+
+        controlForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            settings.division = document.getElementById('contest-division').value;
+            settings.problemIndex = document.getElementById('problem-number').value;
+            settings.count = parseInt(document.getElementById('num-contests').value, 10);
+            settings.handle = document.getElementById('handle').value.trim();
+            settings.compareHandle = document.getElementById('compare-handle').value.trim();
+            
+            if (!settings.handle) {
+                showError('Your Handle is required.');
+                return;
+            }
+            saveSettings();
+            await fetchData();
+        });
+
+        resetCacheBtn.addEventListener('click', () => {
+            const keysToKeep = ['cfDashboardSettings'];
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (!keysToKeep.includes(key)) localStorage.removeItem(key);
+            }
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `<div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-6 rounded-lg shadow-xl">Cache cleared successfully!</div>`;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.remove(), 1500);
+        });
+        
+        const addSortListeners = () => {
+             document.querySelectorAll('.sortable').forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortColumn = header.dataset.sort;
+                    if (settings.sort.column === sortColumn) {
+                        settings.sort.direction = settings.sort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        settings.sort.column = sortColumn;
+                        settings.sort.direction = 'asc';
+                    }
+                    saveSettings();
+                    applyFiltersAndRender();
+                });
+            });
+        }
+       
+
+        [tagFilterInput, verdictFilterInput, ratingMinInput, ratingMaxInput].forEach(el => {
+            el.addEventListener('input', () => {
+                settings.filters.tag = tagFilterInput.value.toLowerCase();
+                settings.filters.verdict = verdictFilterInput.value;
+                settings.filters.ratingMin = ratingMinInput.value;
+                settings.filters.ratingMax = ratingMaxInput.value;
+                saveSettings();
+                applyFiltersAndRender();
+            });
+        });
+
+        // --- UI State Functions ---
+        function showLoading() {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Fetching...';
+            initialMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            tableContainer.classList.add('hidden');
+            analyticsUser1.classList.add('hidden');
+            analyticsUser2.classList.add('hidden');
+            filtersContainer.classList.add('hidden');
+            miniProfileContainer.innerHTML = '';
+            loaderContainer.classList.remove('hidden');
+        }
+        
+        function updateProgress(value, text) { progressBar.style.width = `${value}%`; progressText.textContent = text; }
+        function showSuccess() {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Fetch';
+            loaderContainer.classList.add('hidden');
+            tableContainer.classList.remove('hidden');
+            analyticsUser1.classList.remove('hidden');
+            if (settings.compareHandle) analyticsUser2.classList.remove('hidden');
+            filtersContainer.classList.remove('hidden');
+        }
+        function showError(message) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Fetch';
+            loaderContainer.classList.add('hidden');
+            initialMessage.classList.add('hidden');
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // --- Core Data Fetching and Caching Logic ---
+        async function fetchFromCacheOrApi(key, url, expiry) {
+            const cached = localStorage.getItem(key);
+            if (cached) {
+                const { timestamp, data } = JSON.parse(cached);
+                if (Date.now() - timestamp < expiry) return data;
+            }
+            const response = await fetch(url).then(res => res.json());
+            if (response.status !== 'OK') throw new Error(response.comment);
+            try {
+                localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data: response.result }));
+            } catch (e) { console.error("Failed to cache API response for key:", key, e); }
+            return response.result;
+        }
+        
+        async function fetchUserData(handle, progressStart, progressEnd) {
+            const day = 24 * 60 * 60 * 1000;
+            const tenMins = 10 * 60 * 1000;
+            updateProgress(progressStart, `Fetching info for ${handle}...`);
+            const userInfo = (await fetchFromCacheOrApi(`cf_user_${handle}`, `https://codeforces.com/api/user.info?handles=${handle}`, day))[0];
+            updateProgress(progressStart + (progressEnd - progressStart) / 2, `Fetching submissions for ${handle}...`);
+            const submissions = await fetchFromCacheOrApi(`cf_submissions_${handle}`, `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=10000`, tenMins);
+            return { userInfo, submissions };
+        }
+
+        async function fetchData() {
+            showLoading();
+            const day = 24 * 60 * 60 * 1000;
+            
+            try {
+                updateProgress(5, 'Fetching global data...');
+                const contestList = await fetchFromCacheOrApi('cf_contests', 'https://codeforces.com/api/contest.list', day);
+                const problemset = await fetchFromCacheOrApi('cf_problemset', 'https://codeforces.com/api/problemset.problems', day);
+                
+                const handles = [settings.handle];
+                if(settings.compareHandle) handles.push(settings.compareHandle);
+
+                const userPromises = handles.map((h, i) => fetchUserData(h, 20 + i*40, 60 + i*40));
+                const results = await Promise.all(userPromises);
+                
+                handles.forEach((h, i) => userData[h] = results[i]);
+
+                updateProgress(95, 'Processing data...');
+                const contestMap = new Map();
+                contestList.forEach(c => c.phase === "FINISHED" && contestMap.set(c.id, c.name));
+                allProblems = problemset.problems.map((p, i) => ({
+                    ...p,
+                    contestName: contestMap.get(p.contestId) || `Contest ${p.contestId}`,
+                    solvedCount: problemset.problemStatistics[i]?.solvedCount ?? 0
+                })).filter(p => contestMap.has(p.contestId));
+                
+                processAndRenderData();
+            } catch (err) {
+                console.error(err);
+                showError(err.message);
+            }
+        }
+        
+        function processAndRenderData() {
+            Object.keys(userData).forEach(handle => {
+                const submissionMap = new Map();
+                userData[handle].submissions.forEach(sub => {
+                    const key = `${sub.problem.contestId}-${sub.problem.index}`;
+                    if (sub.verdict === 'OK') submissionMap.set(key, 'Solved');
+                    else if (!submissionMap.has(key)) submissionMap.set(key, sub.verdict.replace(/_/g, ' '));
+                });
+                userData[handle].submissionMap = submissionMap;
+            });
+
+            const filteredProblems = allProblems.filter(p => {
+                const contestName = p.contestName.toLowerCase();
+                const division = settings.division.toLowerCase();
+                let contestMatch = false;
+                if (division === 'div. 1 + div. 2') {
+                    if (contestName.includes('div. 1') && contestName.includes('div. 2')) contestMatch = true;
+                } else if (contestName.includes(division)) {
+                    contestMatch = true;
+                }
+                return p.index === settings.problemIndex && contestMatch;
+            });
+            
+            currentProblemSelection = filteredProblems.sort((a,b) => b.contestId - a.contestId).slice(0, settings.count);
+
+            renderUI();
+            showSuccess();
+            updateProgress(100, 'Done!');
+        }
+        
+        function renderUI() {
+            miniProfileContainer.innerHTML = '';
+            
+            if (settings.compareHandle) {
+                analyticsGrid.className = 'grid lg:grid-cols-2 gap-8';
+                renderMiniProfile(settings.handle, miniProfileContainer);
+                renderAnalyticsForUser(settings.handle, analyticsUser1);
+                renderMiniProfile(settings.compareHandle, miniProfileContainer);
+                renderAnalyticsForUser(settings.compareHandle, analyticsUser2);
+            } else {
+                 analyticsGrid.className = 'grid grid-cols-1 gap-8 max-w-4xl mx-auto';
+                 renderMiniProfile(settings.handle, miniProfileContainer);
+                 renderAnalyticsForUser(settings.handle, analyticsUser1);
+                 analyticsUser2.innerHTML = '';
+                 analyticsUser2.classList.add('hidden');
+            }
+            
+            renderTableHead();
+            applyFiltersAndRender();
+        }
+
+        function applyFiltersAndRender() {
+            const { tag, verdict, ratingMin, ratingMax } = settings.filters;
+            const filtered = currentProblemSelection.filter(p => {
+                const pVerdict = userData[settings.handle]?.submissionMap.get(`${p.contestId}-${p.index}`) || 'Not Attempted';
+                return (!tag || (p.tags && p.tags.join(',').toLowerCase().includes(tag))) &&
+                       (!verdict || pVerdict === verdict) &&
+                       (!ratingMin || (p.rating || 0) >= parseInt(ratingMin, 10)) &&
+                       (!ratingMax || (p.rating || 0) <= parseInt(ratingMax, 10));
+            });
+            sortAndRenderProblems(filtered);
+        }
+
+        function sortAndRenderProblems(problems) {
+            const { column, direction } = settings.sort;
+            problems.sort((a, b) => {
+                let valA, valB;
+                if (column === 'verdict') { valA = userData[settings.handle].submissionMap.get(`${a.contestId}-${a.index}`) || 'Not Attempted'; valB = userData[settings.handle].submissionMap.get(`${b.contestId}-${b.index}`) || 'Not Attempted'; } 
+                else { valA = a[column]; valB = b[column]; }
+                if (valA < valB) return direction === 'asc' ? -1 : 1;
+                if (valA > valB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderProblemTable(problems);
+            updateSortIcons();
+        }
+
+        // --- Rendering Functions ---
+        function renderTableHead() {
+             let headHTML = `<tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="contestName"><div class="flex items-center">Contest<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="problemName"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tags</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rating<span class="ml-2 sort-icon"></span></div></th>`;
+            
+            if (settings.compareHandle) {
+                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">${settings.handle}</th>`;
+                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">${settings.compareHandle}</th>`;
+            } else {
+                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="verdict"><div class="flex items-center">Verdict<span class="ml-2 sort-icon"></span></div></th>`;
+            }
+
+            headHTML += `</tr>`;
+            problemTableHead.innerHTML = headHTML;
+            addSortListeners();
+        }
+
+        function renderProblemTable(problems) {
+            problemTableBody.innerHTML = problems.length === 0 
+                ? `<tr><td colspan="6" class="text-center py-10 text-gray-500 dark:text-gray-400">No problems found matching your criteria.</td></tr>`
+                : problems.map(p => {
+                    const tagsHTML = (p.tags || []).map(tag => `<span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 mr-2 mb-1 clickable-tag" onclick="setTagFilter('${tag}')">${tag}</span>`).join('');
+                    
+                    let verdictHTML = '';
+                    if (settings.compareHandle) {
+                        const v1 = userData[settings.handle].submissionMap.get(`${p.contestId}-${p.index}`) || 'Not Attempted';
+                        const v2 = userData[settings.compareHandle].submissionMap.get(`${p.contestId}-${p.index}`) || 'Not Attempted';
+                        verdictHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v1)[1]}">${v1}</span></td>
+                                       <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v2)[1]}">${v2}</span></td>`;
+                    } else {
+                        const verdict = userData[settings.handle].submissionMap.get(`${p.contestId}-${p.index}`) || 'Not Attempted';
+                        verdictHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(verdict)[1]}">${verdict}</span></td>`;
+                    }
+
+                    return `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                <td class="px-6 py-4 whitespace-normal text-sm max-w-xs"><div class="font-medium">${p.contestName}</div></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">${p.name}</a></td>
+                                <td class="px-6 py-4 whitespace-normal text-sm max-w-xs">${tagsHTML}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${p.rating || 'N/A'}</td>
+                                ${verdictHTML}
+                            </tr>`;
+            }).join('');
+        }
+        
+        function setTagFilter(tag) { tagFilterInput.value = tag; settings.filters.tag = tag.toLowerCase(); saveSettings(); applyFiltersAndRender(); }
+        function updateSortIcons() {
+            document.querySelectorAll('.sortable').forEach(header => {
+                const icon = header.querySelector('.sort-icon');
+                if (header.dataset.sort === settings.sort.column) {
+                    icon.innerHTML = settings.sort.direction === 'asc' ? '&#9650;' : '&#9660;'; icon.classList.add('active');
+                } else { icon.innerHTML = ''; icon.classList.remove('active'); }
+            });
+        }
+        function renderMiniProfile(handle, container) {
+            const { rating, rank, avatar } = userData[handle].userInfo;
+            const rankColor = getRankColor(rank);
+            const profileElement = document.createElement('div');
+            profileElement.className = 'card p-4 flex items-center space-x-4 flex-1 animate-fade-in';
+            profileElement.innerHTML = `<img src="${avatar}" class="w-12 h-12 rounded-full"><div class="flex-grow"><a href="https://codeforces.com/profile/${handle}" target="_blank" class="font-bold text-lg ${rankColor} hover:underline">${handle}</a><p class="text-sm text-gray-600 dark:text-gray-400">${rank || 'Unrated'} (${rating || 'N/A'})</p></div>`;
+            container.appendChild(profileElement);
+        }
+
+        function renderAnalyticsForUser(handle, container) {
+            const userSubmissions = userData[handle].submissions;
+            const userSubmissionMap = userData[handle].submissionMap;
+            const idSuffix = handle === settings.handle ? '1' : '2';
+
+            container.innerHTML = `
+                <div class="card p-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Performance: ${handle}</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 text-center">Verdict Breakdown</h3>
+                            <canvas id="verdict-pie-chart-${idSuffix}"></canvas>
+                            <div id="verdict-details-${idSuffix}" class="mt-4 space-y-1"></div>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Weakest Tags</h3>
+                            <div id="weakness-detection-${idSuffix}" class="space-y-2"></div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 mt-4">Suggestion</h3>
+                            <div id="difficulty-suggestion-${idSuffix}" class="text-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                     <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Skill Progression: ${handle}</h2>
+                    <div><h3 class="font-semibold text-gray-900 dark:text-white mb-2">Solved Count by Rating</h3><canvas id="rating-distribution-chart-${idSuffix}" height="150"></canvas></div>
+                    <div class="mt-6">
+                         <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Rating Breakdown (Current Selection)</h3>
+                         <div id="rating-breakdown-container-${idSuffix}" class="overflow-y-auto max-h-48 pr-2"></div>
+                    </div>
+                    <div class="mt-6"><h3 class="font-semibold text-gray-900 dark:text-white mb-2">Tag Mastery</h3><div id="tag-mastery-container-${idSuffix}" class="space-y-2 overflow-y-auto max-h-48 pr-2"></div></div>
+                </div>
+            `;
+            
+            renderVerdictPieChart(currentProblemSelection, userSubmissionMap, `verdict-pie-chart-${idSuffix}`, `verdict-details-${idSuffix}`);
+            renderRatingDistributionChart(userSubmissions, `rating-distribution-chart-${idSuffix}`);
+            renderRatingBreakdownTable(currentProblemSelection, userSubmissionMap, `rating-breakdown-container-${idSuffix}`);
+            renderTagMastery(currentProblemSelection, userSubmissionMap, `tag-mastery-container-${idSuffix}`);
+            renderWeaknessDetection(userSubmissions, `weakness-detection-${idSuffix}`);
+            renderDifficultySuggestion(currentProblemSelection, userSubmissionMap, `difficulty-suggestion-${idSuffix}`);
+        }
+
+        function renderVerdictPieChart(problems, submissionMap, chartId, detailsId) {
+            const pieChartVerdictCounts = problems.reduce((acc, p) => {
+                const verdict = submissionMap.get(`${p.contestId}-${p.index}`) || 'Not Attempted';
+                const simpleVerdict = verdict === 'Solved' || verdict === 'Not Attempted' ? verdict : 'Attempted but Wrong';
+                acc[simpleVerdict] = (acc[simpleVerdict] || 0) + 1;
+                return acc;
+            }, {});
+            const ctx = document.getElementById(chartId).getContext('2d');
+            if (charts[chartId]) charts[chartId].destroy();
+            charts[chartId] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(pieChartVerdictCounts),
+                    datasets: [{ data: Object.values(pieChartVerdictCounts), backgroundColor: Object.keys(pieChartVerdictCounts).map(v => getVerdictColor(v)[0]), borderColor: settings.theme === 'dark' ? '#182030' : '#ffffff' }]
+                },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+            });
+
+            const detailedVerdictCounts = problems.reduce((acc, p) => {
+                const verdict = submissionMap.get(`${p.contestId}-${p.index}`) || 'Not Attempted';
+                acc[verdict] = (acc[verdict] || 0) + 1;
+                return acc;
+            }, {});
+            document.getElementById(detailsId).innerHTML = Object.entries(detailedVerdictCounts).sort((a,b) => b[1] - a[1]).map(([verdict, count]) => {
+                const [colorHex, ] = getVerdictColor(verdict);
+                return `<div class="flex justify-between items-center text-sm"><span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colorHex};"></span><span class="font-medium">${verdict}</span></span><span class="font-bold">${count}</span></div>`;
+            }).join('');
+        }
+        
+        function renderRatingDistributionChart(submissions, chartId) {
+            const solvedByRating = {};
+            submissions.forEach(sub => {
+                if(sub.verdict === 'OK') {
+                    const problem = allProblems.find(p => p.contestId === sub.problem.contestId && p.index === sub.problem.index);
+                    if(problem && problem.rating) solvedByRating[problem.rating] = (solvedByRating[problem.rating] || 0) + 1;
+                }
+            });
+            const sortedRatings = Object.keys(solvedByRating).map(Number).sort((a,b)=> a-b);
+            const ctx = document.getElementById(chartId).getContext('2d');
+            if(charts[chartId]) charts[chartId].destroy();
+            charts[chartId] = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: sortedRatings.map(String), datasets: [{ label: 'Total Solved', data: sortedRatings.map(r => solvedByRating[r]), backgroundColor: '#4f46e5' }] },
+                options: { scales: { y: { beginAtZero: true, ticks: { color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280' } }, x: { ticks: { color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280' } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { title: ctx => `Rating: ${ctx[0].label}` } } } }
+            });
+        }
+
+        function renderRatingBreakdownTable(problems, submissionMap, containerId) {
+            const ratingData = {};
+            problems.forEach(p => {
+                if (!p.rating) return;
+                if (!ratingData[p.rating]) ratingData[p.rating] = { total: 0, solved: 0 };
+                ratingData[p.rating].total++;
+                if (submissionMap.get(`${p.contestId}-${p.index}`) === 'Solved') {
+                    ratingData[p.rating].solved++;
+                }
+            });
+            const sortedRatings = Object.entries(ratingData).sort((a, b) => Number(b[0]) - Number(a[0]));
+
+            const tableHTML = `
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-100 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-4 py-2">Rating</th>
+                            <th scope="col" class="px-4 py-2 text-center">My Solved</th>
+                            <th scope="col" class="px-4 py-2 text-center">Total Problems</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        ${sortedRatings.map(([rating, data]) => `
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-4 py-2 font-medium">${rating}</td>
+                                <td class="px-4 py-2 text-center font-semibold text-green-600 dark:text-green-400">${data.solved}</td>
+                                <td class="px-4 py-2 text-center">${data.total}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            document.getElementById(containerId).innerHTML = tableHTML;
+        }
+        
+        function renderTagMastery(problems, submissionMap, containerId) {
+            const tagData = {};
+            problems.forEach(p => (p.tags || []).forEach(tag => {
+                if(!tagData[tag]) tagData[tag] = { total: 0, solved: 0 };
+                tagData[tag].total++;
+                if (submissionMap.get(`${p.contestId}-${p.index}`) === 'Solved') tagData[tag].solved++;
+            }));
+            const sortedTags = Object.entries(tagData).sort((a,b) => b[1].total - a[1].total);
+            document.getElementById(containerId).innerHTML = sortedTags.slice(0, 10).map(([tag, data]) => {
+                const mastery = data.total > 0 ? (data.solved / data.total) * 100 : 0;
+                return `<div class="text-sm"><div class="flex justify-between mb-1"><span class="font-medium">${tag}</span><span class="text-gray-500 dark:text-gray-400">${data.solved}/${data.total}</span></div><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2"><div class="bg-indigo-600 h-2 rounded-full" style="width: ${mastery}%"></div></div></div>`;
+            }).join('');
+        }
+
+        function renderWeaknessDetection(submissions, containerId) {
+            const tagData = {};
+            submissions.forEach(sub => {
+                const p = allProblems.find(p => p.contestId === sub.problem.contestId && p.index === sub.problem.index);
+                if (!p || !p.tags) return;
+                p.tags.forEach(tag => {
+                    if (!tagData[tag]) tagData[tag] = { attempted: new Set(), solved: new Set() };
+                    tagData[tag].attempted.add(p.name);
+                    if (sub.verdict === 'OK') tagData[tag].solved.add(p.name);
+                });
+            });
+            const weaknesses = Object.entries(tagData).map(([tag, data]) => ({ tag, success: data.attempted.size > 0 ? data.solved.size / data.attempted.size : 0, attempted: data.attempted.size })).filter(item => item.attempted >= 5).sort((a, b) => a.success - b.success);
+            document.getElementById(containerId).innerHTML = weaknesses.length > 0
+                ? weaknesses.slice(0, 3).map(w => `<div class="text-sm flex justify-between items-center"><span class="text-red-500 dark:text-red-400 font-semibold">${w.tag}</span><span class="text-xs text-gray-500">${(w.success * 100).toFixed(0)}% success</span></div>`).join('')
+                : `<p class="text-sm text-gray-500">Not enough data. Keep practicing!</p>`;
+        }
+
+        function renderDifficultySuggestion(problems, submissionMap, containerId) {
+            const ratingData = {};
+            problems.forEach(p => {
+                if (!p.rating) return;
+                if (!ratingData[p.rating]) ratingData[p.rating] = { total: 0, solved: 0 };
+                ratingData[p.rating].total++;
+                if (submissionMap.get(`${p.contestId}-${p.index}`) === 'Solved') ratingData[p.rating].solved++;
+            });
+            const sortedRatings = Object.entries(ratingData).sort((a, b) => Number(a[0]) - Number(b[0]));
+            let comfortRating = 0;
+            for(const [rating, data] of sortedRatings) {
+                if (data.total > 2 && (data.solved / data.total) > 0.6) comfortRating = Number(rating);
+            }
+            document.getElementById(containerId).innerHTML = comfortRating > 0
+                ? `<p class="text-sm text-gray-600 dark:text-gray-400">You solve >60% of <strong class="text-gray-900 dark:text-white">${comfortRating}</strong>s. Try <strong class="text-indigo-600 dark:text-indigo-400">${comfortRating + 100}</strong> problems next!</p>`
+                : `<p class="text-sm text-gray-600 dark:text-gray-400">Solve more to get a suggestion!</p>`;
+        }
+        
+        // --- Utility Functions ---
+        function getVerdictColor(verdict) {
+            const colors = {
+                'Solved': ['#10b981', 'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400'],
+                'Not Attempted': ['#6b7280', 'bg-gray-100 text-gray-800 dark:bg-gray-400/10 dark:text-gray-400'],
+                'Attempted but Wrong': ['#ef4444', 'bg-red-100 text-red-800 dark:bg-red-400/10 dark:text-red-400'],
+                'WRONG ANSWER': ['#ef4444', 'bg-red-100 text-red-800 dark:bg-red-400/10 dark:text-red-400'],
+                'TIME LIMIT EXCEEDED': ['#f59e0b', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400'],
+                'MEMORY LIMIT EXCEEDED': ['#f97316', 'bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400'],
+                'RUNTIME ERROR': ['#8b5cf6', 'bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400'],
+                'COMPILATION ERROR': ['#ec4899', 'bg-pink-100 text-pink-800 dark:bg-pink-500/10 dark:text-pink-400'],
+            };
+            return colors[verdict] || colors['Attempted but Wrong'];
+        }
+        function getRankColor(rank) {
+            if (!rank) return 'text-gray-500';
+            if (rank.includes('Grandmaster')) return 'text-red-500';
+            if (rank.includes('Master')) return 'text-yellow-500';
+            if (rank.includes('Candidate')) return 'text-purple-500';
+            if (rank.includes('Expert')) return 'text-blue-500';
+            if (rank.includes('Specialist')) return 'text-cyan-500';
+            return 'text-green-500';
+        }
+    </script>
+</body>
+</html>
+
