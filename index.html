@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-
     <link rel="shortcut icon" href="https://cdn.iconscout.com/icon/free/png-256/free-code-forces-logo-icon-svg-download-png-2944796.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Codeforces Practice Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -195,7 +193,7 @@
             problemIndex: 'D',
             count: 50,
             filters: { tag: '', verdict: '', ratingMin: '', ratingMax: '' },
-            sort: { column: 'contestName', direction: 'desc' },
+            sort: { column: 'startTimeSeconds', direction: 'desc' },
             theme: 'dark'
         };
 
@@ -251,6 +249,8 @@
                 showError('Your Handle is required.');
                 return;
             }
+            // Reset sort order to default (by date) for every new fetch.
+            settings.sort = { column: 'startTimeSeconds', direction: 'desc' };
             saveSettings();
             await fetchData();
         });
@@ -373,12 +373,17 @@
 
                 updateProgress(95, 'Processing data...');
                 const contestMap = new Map();
-                contestList.forEach(c => c.phase === "FINISHED" && contestMap.set(c.id, c.name));
-                allProblems = problemset.problems.map((p, i) => ({
-                    ...p,
-                    contestName: contestMap.get(p.contestId) || `Contest ${p.contestId}`,
-                    solvedCount: problemset.problemStatistics[i]?.solvedCount ?? 0
-                })).filter(p => contestMap.has(p.contestId));
+                contestList.forEach(c => c.phase === "FINISHED" && contestMap.set(c.id, c));
+                allProblems = problemset.problems.map((p, i) => {
+                    const contest = contestMap.get(p.contestId);
+                    if (!contest) return null;
+                    return {
+                        ...p,
+                        contestName: contest.name,
+                        startTimeSeconds: contest.startTimeSeconds,
+                        solvedCount: problemset.problemStatistics[i]?.solvedCount ?? 0
+                    }
+                }).filter(p => p !== null);
                 
                 processAndRenderData();
             } catch (err) {
@@ -392,8 +397,11 @@
                 const submissionMap = new Map();
                 userData[handle].submissions.forEach(sub => {
                     const key = `${sub.problem.contestId}-${sub.problem.index}`;
-                    if (sub.verdict === 'OK') submissionMap.set(key, 'Solved');
-                    else if (!submissionMap.has(key)) submissionMap.set(key, sub.verdict.replace(/_/g, ' '));
+                    if (sub.verdict === 'OK') {
+                        submissionMap.set(key, 'Solved');
+                    } else if (!submissionMap.has(key) && sub.verdict) {
+                        submissionMap.set(key, sub.verdict.replace(/_/g, ' '));
+                    }
                 });
                 userData[handle].submissionMap = submissionMap;
             });
@@ -410,7 +418,8 @@
                 return p.index === settings.problemIndex && contestMatch;
             });
             
-            currentProblemSelection = filteredProblems.sort((a,b) => b.contestId - a.contestId).slice(0, settings.count);
+            // This initial sort is now implicitly handled by the default settings.sort
+            currentProblemSelection = filteredProblems.slice(0, settings.count);
 
             renderUI();
             showSuccess();
@@ -468,8 +477,8 @@
         // --- Rendering Functions ---
         function renderTableHead() {
              let headHTML = `<tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="contestName"><div class="flex items-center">Contest<span class="ml-2 sort-icon"></span></div></th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="problemName"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="startTimeSeconds"><div class="flex items-center">Contest<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="name"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tags</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rating<span class="ml-2 sort-icon"></span></div></th>`;
             
@@ -628,7 +637,7 @@
                     ratingData[p.rating].solved++;
                 }
             });
-            const sortedRatings = Object.entries(ratingData).sort((a, b) => Number(b[0]) - Number(a[0]));
+            const sortedRatings = Object.entries(ratingData).sort((a, b) => b[1].total - a[1].total);
 
             const tableHTML = `
                 <table class="w-full text-sm text-left">
