@@ -110,7 +110,19 @@
             <div class="card p-6 mb-8">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Control Panel</h2>
                 <form id="control-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
-                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Division</label><select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>Div. 1</option><option selected>Div. 2</option><option>Div. 3</option><option>Div. 4</option><option>Div. 1 + Div. 2</option><option>Educational</option><option>CodeTON</option><option>Global</option><option>Kotlin</option><option>VK Cup</option></select></div>
+                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Division</label><select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white">
+                        <option>Div. 1</option>
+                        <option selected>Only Div. 2</option>
+                        <option>All Div. 2</option>
+                        <option>Div. 3</option>
+                        <option>Div. 4</option>
+                        <option>Div. 1 + Div. 2</option>
+                        <option>Educational</option>
+                        <option>CodeTON</option>
+                        <option>Global</option>
+                        <option>Kotlin</option>
+                        <option>VK Cup</option>
+                    </select></div>
                     <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Index</label><select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option></select></div>
                     <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Problems</label><input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
                     <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Your Handle</label><input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
@@ -189,7 +201,7 @@
         let settings = {
             handle: '',
             compareHandle: '',
-            division: 'Div. 2',
+            division: 'Only Div. 2',
             problemIndex: 'D',
             count: 50,
             filters: { tag: '', verdict: '', ratingMin: '', ratingMax: '' },
@@ -410,15 +422,20 @@
                 const contestName = p.contestName.toLowerCase();
                 const division = settings.division.toLowerCase();
                 let contestMatch = false;
-                if (division === 'div. 1 + div. 2') {
-                    if (contestName.includes('div. 1') && contestName.includes('div. 2')) contestMatch = true;
-                } else if (contestName.includes(division)) {
-                    contestMatch = true;
+                
+                if (division === 'all div. 2') {
+                    contestMatch = contestName.includes('div. 2');
+                } else if (division === 'only div. 2') {
+                    contestMatch = contestName.includes('div. 2') && !contestName.includes('div. 1') && !contestName.includes('educational');
+                } else if (division === 'div. 1 + div. 2') {
+                    contestMatch = contestName.includes('div. 1') && contestName.includes('div. 2');
+                } else {
+                    contestMatch = contestName.includes(division);
                 }
+                
                 return p.index === settings.problemIndex && contestMatch;
             });
             
-            // This initial sort is now implicitly handled by the default settings.sort
             currentProblemSelection = filteredProblems.slice(0, settings.count);
 
             renderUI();
