@@ -4,35 +4,23 @@
     <link rel="shortcut icon" href="https://cdn.iconscout.com/icon/free/png-256/free-code-forces-logo-icon-svg-download-png-2944796.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CF Dashboard | Shinobi Edition</title>
+    <title>Codeforces Practice Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class', 
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        // Softer, eye-friendly amber/ember instead of glaring orange
-                        brand: {
-                            400: '#fb923c', // soft orange
-                            500: '#f59e0b', // calm amber
-                            600: '#d97706', 
-                            700: '#b45309', 
+                        gray: {
+                            850: '#182030',
+                            900: '#121826',
                         },
-                        // Cooling slate grays instead of harsh pure blacks
-                        surface: {
-                            700: '#334155', // borders
-                            800: '#1e293b', // cards
-                            900: '#0f172a', // deep background
-                        },
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
                     },
                     keyframes: {
                         fadeIn: {
@@ -49,64 +37,70 @@
     </script>
     <style>
         body {
-            background-color: #0f172a; /* surface-900 */
-            color: #cbd5e1; /* slate-300 */
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb; /* bg-gray-50 */
         }
-        
+        .dark body {
+            background-color: #121826; /* bg-gray-900 */
+        }
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .dark ::-webkit-scrollbar-track { background: #182030; }
+        html ::-webkit-scrollbar-track { background: #e5e7eb; }
+        .dark ::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 4px; }
+        html ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #718096; }
+        html ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
         .card {
-            background-color: #1e293b; /* surface-800 */
-            border: 1px solid rgba(51, 65, 85, 0.6); /* slate-700 */
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
             transition: all 0.3s ease-in-out;
         }
-        .card:hover {
-            border-color: rgba(245, 158, 11, 0.25); /* brand-500 subtle */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        .dark .card {
+            background-color: #182030; /* bg-gray-850 */
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         #progress-bar { transition: width 0.3s ease-in-out; }
-        
         .form-input {
-            background-color: #0f172a; /* surface-900 */
-            border: 1px solid #334155; /* slate-700 */
-            color: #f1f5f9; /* slate-100 */
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+        }
+        .dark .form-input {
+            background-color: #121826;
+            border-color: #4a5568;
         }
         .form-input:focus {
              outline: none;
-             border-color: #f59e0b; /* brand-500 */
-             box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+             border-color: #4f46e5;
+             box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
         }
-        
-        .sortable:hover { background-color: rgba(51, 65, 85, 0.3); } /* slate-700 subtle */
-        .sort-icon { opacity: 0.4; transition: opacity 0.2s ease-in-out; }
-        .sortable:hover .sort-icon { opacity: 0.8; }
-        .sort-icon.active { opacity: 1; color: #f59e0b; }
-        
-        .clickable-tag { cursor: pointer; transition: all 0.2s; }
-        .clickable-tag:hover { background-color: #f59e0b; color: #fff; }
-        
-        .glow-text {
-            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        .dark .sortable:hover { background-color: #2d3748; }
+        html .sortable:hover { background-color: #f3f4f6; }
+        .sort-icon { opacity: 0.5; transition: opacity 0.2s ease-in-out; }
+        .sortable:hover .sort-icon { opacity: 1; }
+        .sort-icon.active { opacity: 1; }
+        .clickable-tag { cursor: pointer; transition: background-color 0.2s; }
+        .dark .clickable-tag:hover { background-color: #4f46e5; }
+        html .clickable-tag:hover { background-color: #4f46e5; color: white; }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased text-gray-700 dark:text-gray-300">
 
     <div class="container mx-auto p-4 md:p-8">
         <!-- Header -->
         <header class="mb-10">
             <div class="flex justify-between items-center mb-4">
-                 <h1 class="text-3xl md:text-4xl font-extrabold text-slate-100 flex items-center gap-3">
-                    <span class="text-brand-500">忍</span> 
-                    CF Dashboard <span class="text-brand-400 glow-text hidden sm:inline">Soft Night</span>
-                 </h1>
+                 <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">CF Dashboard</h1>
+                 <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+                     <svg id="theme-icon-light" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                     <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                 </button>
             </div>
             <div id="mini-profile-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </header>
@@ -114,44 +108,26 @@
         <main class="grid grid-cols-1">
              <!-- Control Panel Full Width -->
             <div class="card p-6 mb-8">
-                <h2 class="text-xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    Mission Parameters
-                </h2>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Control Panel</h2>
                 <form id="control-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
-                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-slate-400">Division</label>
-                        <select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input">
-                            <option>Div. 1</option>
-                            <option selected>Only Div. 2</option>
-                            <option>All Div. 2</option>
-                            <option>Div. 3</option>
-                            <option>Div. 4</option>
-                            <option>Div. 1 + Div. 2</option>
-                            <option>Educational</option>
-                            <option>CodeTON</option>
-                            <option>Global</option>
-                            <option>Kotlin</option>
-                            <option>VK Cup</option>
-                        </select>
-                    </div>
-                    <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-slate-400">Index</label>
-                        <select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input">
-                            <option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option>
-                        </select>
-                    </div>
-                    <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-slate-400">Problems</label>
-                        <input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input">
-                    </div>
-                    <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-slate-400">Your Handle</label>
-                        <input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-brand-400 font-bold tracking-wide">
-                    </div>
-                    <div class="lg:col-span-1"><label for="compare-handle" class="block text-sm font-medium text-slate-400">Rival Handle</label>
-                        <input type="text" name="compare-handle" id="compare-handle" placeholder="e.g., Petr" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input">
-                    </div>
-                    <div class="lg:col-span-1 grid grid-cols-2 gap-2">
-                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-slate-900 bg-brand-500 hover:bg-brand-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-900 focus:ring-brand-500 transition-colors">Fetch</button>
-                        <button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-300 bg-surface-800 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-900 focus:ring-slate-500 transition-colors">Reset</button>
-                    </div>
+                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Division</label><select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white">
+                        <option>Div. 1</option>
+                        <option selected>Only Div. 2</option>
+                        <option>All Div. 2</option>
+                        <option>Div. 3</option>
+                        <option>Div. 4</option>
+                        <option>Div. 1 + Div. 2</option>
+                        <option>Educational</option>
+                        <option>CodeTON</option>
+                        <option>Global</option>
+                        <option>Kotlin</option>
+                        <option>VK Cup</option>
+                    </select></div>
+                    <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Index</label><select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option></select></div>
+                    <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Problems</label><input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Your Handle</label><input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="lg:col-span-1"><label for="compare-handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Compare Handle</label><input type="text" name="compare-handle" id="compare-handle" placeholder="e.g., Petr" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="lg:col-span-1 grid grid-cols-2 gap-2"><button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Fetch</button><button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Reset</button></div>
                 </form>
             </div>
 
@@ -168,47 +144,16 @@
                 <div class="card overflow-hidden">
                     <div class="p-2 sm:p-6">
                         <!-- Filters -->
-                        <div id="filters-container" class="mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hidden">
-                            <input type="text" id="tag-filter" placeholder="Filter by tag..." class="form-input rounded-md sm:col-span-2 md:col-span-1">
-                            <select id="verdict-filter" class="form-input rounded-md">
-                                <option value="">All Verdicts</option>
-                                <option value="Solved">Solved</option>
-                                <option value="Not Attempted">Not Attempted</option>
-                                <option value="WRONG ANSWER">Wrong Answer</option>
-                            </select>
-                            <input type="number" id="rating-min-filter" placeholder="Min Rating" class="form-input rounded-md">
-                            <input type="number" id="rating-max-filter" placeholder="Max Rating" class="form-input rounded-md">
-                        </div>
+                        <div id="filters-container" class="mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hidden"><input type="text" id="tag-filter" placeholder="Filter by tag..." class="form-input rounded-md sm:col-span-2 md:col-span-1"><select id="verdict-filter" class="form-input rounded-md"><option value="">All Verdicts</option><option value="Solved">Solved</option><option value="Not Attempted">Not Attempted</option><option value="WRONG ANSWER">Wrong Answer</option></select><input type="number" id="rating-min-filter" placeholder="Min Rating" class="form-input rounded-md"><input type="number" id="rating-max-filter" placeholder="Max Rating" class="form-input rounded-md"></div>
                         
-                        <div id="initial-message" class="text-center py-20">
-                            <svg class="mx-auto h-16 w-16 text-slate-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                            <h3 class="mt-2 text-xl font-bold text-slate-200">Awaiting Orders</h3>
-                            <p class="mt-1 text-sm text-slate-400">Enter your handle to begin your training.</p>
-                        </div>
-                        
-                        <div id="loader-container" class="text-center py-20 hidden">
-                            <div class="w-full bg-slate-800 rounded-full h-2 mb-4 overflow-hidden">
-                                <div id="progress-bar" class="bg-brand-500 h-2 rounded-full relative" style="width: 0%">
-                                    <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-                                </div>
-                            </div>
-                            <p id="progress-text" class="mt-4 text-sm font-medium text-brand-400 animate-pulse">Gathering Intel...</p>
-                        </div>
-                        
-                        <div id="error-message" class="text-center py-20 hidden">
-                            <svg class="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                            </svg>
-                            <h3 class="mt-2 text-lg font-bold text-red-400">Mission Failed</h3>
-                            <p class="mt-1 text-sm text-red-300" id="error-text"></p>
-                        </div>
+                        <div id="initial-message" class="text-center py-20"><svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><h3 class="mt-2 text-lg font-medium text-gray-900 dark:text-white">Ready to Practice?</h3><p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Enter your handle and fetch problems to begin.</p></div>
+                        <div id="loader-container" class="text-center py-20 hidden"><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-4"><div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div></div><p id="progress-text" class="mt-4 text-sm text-gray-500 dark:text-gray-400">Initializing...</p></div>
+                        <div id="error-message" class="text-center py-20 hidden"><svg class="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><h3 class="mt-2 text-lg font-medium text-red-500 dark:text-red-400">An Error Occurred</h3><p class="mt-1 text-sm text-red-600 dark:text-red-500" id="error-text"></p></div>
                         
                         <div id="table-container" class="hidden overflow-x-auto">
-                           <table class="min-w-full divide-y divide-slate-700">
-                                <thead id="problem-table-head" class="bg-slate-800/50"></thead>
-                                <tbody id="problem-table-body" class="divide-y divide-slate-700/50"></tbody>
+                           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead id="problem-table-head" class="bg-gray-50 dark:bg-gray-800"></thead>
+                                <tbody id="problem-table-body" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
                             </table>
                         </div>
                     </div>
@@ -240,7 +185,11 @@
         const ratingMinInput = document.getElementById('rating-min-filter');
         const ratingMaxInput = document.getElementById('rating-max-filter');
         const miniProfileContainer = document.getElementById('mini-profile-container');
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        const themeIconDark = document.getElementById('theme-icon-dark');
 
+        // Chart instances
         let charts = {};
         
         // --- App State ---
@@ -252,12 +201,13 @@
         let settings = {
             handle: '', compareHandle: '', division: 'Only Div. 2', problemIndex: 'D', count: 50,
             filters: { tag: '', verdict: '', ratingMin: '', ratingMax: '' },
-            sort: { column: 'startTimeSeconds', direction: 'desc' }
+            sort: { column: 'startTimeSeconds', direction: 'desc' },
+            theme: 'dark'
         };
 
-        const saveSettings = () => localStorage.setItem('cfDashboardSettingsNaruto', JSON.stringify(settings));
+        const saveSettings = () => localStorage.setItem('cfDashboardSettings', JSON.stringify(settings));
         const loadSettings = () => {
-            const saved = localStorage.getItem('cfDashboardSettingsNaruto');
+            const saved = localStorage.getItem('cfDashboardSettings');
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
             
             document.getElementById('handle').value = settings.handle;
@@ -270,7 +220,27 @@
                 const input = document.getElementById(inputId);
                 if (input) input.value = settings.filters[key];
             });
+            applyTheme();
         };
+
+        // --- Theme Management ---
+        const applyTheme = () => {
+            if (settings.theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeIconDark.classList.remove('hidden');
+                themeIconLight.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIconLight.classList.remove('hidden');
+                themeIconDark.classList.add('hidden');
+            }
+        };
+        themeToggle.addEventListener('click', () => {
+            settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
+            applyTheme();
+            saveSettings();
+        });
+
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', loadSettings);
@@ -284,7 +254,7 @@
             settings.compareHandle = document.getElementById('compare-handle').value.trim();
             
             if (!settings.handle) {
-                showError('Your Handle is required to start the mission.');
+                showError('Your Handle is required.');
                 return;
             }
             settings.sort = { column: 'startTimeSeconds', direction: 'desc' };
@@ -293,14 +263,14 @@
         });
 
         resetCacheBtn.addEventListener('click', () => {
-            const keysToKeep = ['cfDashboardSettingsNaruto'];
+            const keysToKeep = ['cfDashboardSettings'];
             for (let i = localStorage.length - 1; i >= 0; i--) {
                 const key = localStorage.key(i);
                 if (!keysToKeep.includes(key)) localStorage.removeItem(key);
             }
             const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-surface-900/80 flex items-center justify-center z-50 backdrop-blur-sm';
-            modal.innerHTML = `<div class="bg-surface-800 border border-brand-500 text-slate-200 p-6 rounded-lg shadow-lg font-medium">Local Intel Cleared!</div>`;
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `<div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-6 rounded-lg shadow-xl">Cache cleared successfully!</div>`;
             document.body.appendChild(modal);
             setTimeout(() => modal.remove(), 1500);
         });
@@ -342,7 +312,7 @@
         // --- UI State Functions ---
         function showLoading() {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-slate-900 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Fetching';
+            submitBtn.textContent = 'Fetching...';
             initialMessage.classList.add('hidden');
             errorMessage.classList.add('hidden');
             tableContainer.classList.add('hidden');
@@ -390,12 +360,10 @@
                 localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data: dataToCache })); 
             } catch (e) { 
                 console.warn("Storage Quota Exceeded. Clearing old intel to make space...");
-                // Free up space by clearing older cf_ caches
                 for (let i = localStorage.length - 1; i >= 0; i--) {
                     const k = localStorage.key(i);
                     if (k && k.startsWith('cf_')) localStorage.removeItem(k);
                 }
-                // Retry caching once after cleanup
                 try {
                     localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data: dataToCache }));
                 } catch(err) {
@@ -408,11 +376,9 @@
         async function fetchUserData(handle, progressStart, progressEnd) {
             const day = 24 * 60 * 60 * 1000;
             const tenMins = 10 * 60 * 1000;
-            updateProgress(progressStart, `Locating Ninja: ${handle}...`);
+            updateProgress(progressStart, `Fetching info for ${handle}...`);
             const userInfo = (await fetchFromCacheOrApi(`cf_user_${handle}`, `https://codeforces.com/api/user.info?handles=${handle}`, day))[0];
-            updateProgress(progressStart + (progressEnd - progressStart) / 2, `Extracting Mission Logs for ${handle}...`);
-            
-            // Trim submissions to avoid localStorage QuotaExceededError
+            updateProgress(progressStart + (progressEnd - progressStart) / 2, `Fetching submissions for ${handle}...`);
             const submissions = await fetchFromCacheOrApi(
                 `cf_submissions_${handle}`, 
                 `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=10000`, 
@@ -431,10 +397,8 @@
             const day = 24 * 60 * 60 * 1000;
             
             try {
-                updateProgress(5, 'Connecting to Global Network...');
+                updateProgress(5, 'Fetching global data...');
                 const contestList = await fetchFromCacheOrApi('cf_contests', 'https://codeforces.com/api/contest.list', day);
-                
-                // Trim problemset to save substantial local storage space
                 const problemset = await fetchFromCacheOrApi('cf_problemset', 'https://codeforces.com/api/problemset.problems', day, (data) => ({
                     problems: data.problems.map(p => ({
                         contestId: p.contestId,
@@ -453,10 +417,9 @@
                 
                 handles.forEach((h, i) => userData[h] = results[i]);
 
-                updateProgress(95, 'Synthesizing Data...');
+                updateProgress(95, 'Processing data...');
                 const contestMap = new Map();
                 contestList.forEach(c => c.phase === "FINISHED" && contestMap.set(c.id, c));
-                
                 allProblems = problemset.problems.map((p, i) => {
                     const contest = contestMap.get(p.contestId);
                     if (!contest) return null;
@@ -477,19 +440,15 @@
         function processAndRenderData() {
             Object.keys(userData).forEach(handle => {
                 const submissionMap = new Map();
-                // Submissions are usually newest to oldest. 
-                // We want to record the earliest Solved date, or latest fail.
                 userData[handle].submissions.forEach(sub => {
                     const key = `${sub.problem.contestId}-${sub.problem.index}`;
                     const current = submissionMap.get(key);
 
                     if (sub.verdict === 'OK') {
-                        // Keep the oldest/earliest solve date
                         if (!current || current.verdict !== 'Solved' || sub.creationTimeSeconds < current.solvedDate) {
                             submissionMap.set(key, { verdict: 'Solved', solvedDate: sub.creationTimeSeconds });
                         }
                     } else if (sub.verdict && (!current || current.verdict !== 'Solved')) {
-                        // If not solved yet, keep track of the attempt
                         if(!current) {
                             submissionMap.set(key, { verdict: sub.verdict.replace(/_/g, ' '), solvedDate: null });
                         }
@@ -520,7 +479,7 @@
 
             renderUI();
             showSuccess();
-            updateProgress(100, 'Mission Ready!');
+            updateProgress(100, 'Done!');
         }
         
         function renderUI() {
@@ -547,7 +506,7 @@
         function applyFiltersAndRender() {
             const { tag, verdict, ratingMin, ratingMax } = settings.filters;
             const filtered = currentProblemSelection.filter(p => {
-                const pVerdictObj = userData[settings.handle]?.submissionMap.get(`${p.contestId}-${p.index}`) || { verdict: 'Not Attempted' };
+                const pVerdictObj = userData[settings.handle]?.submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                 const pVerdict = pVerdictObj.verdict;
                 return (!tag || (p.tags && p.tags.join(',').toLowerCase().includes(tag))) &&
                        (!verdict || pVerdict === verdict) &&
@@ -578,16 +537,16 @@
         // --- Rendering Functions ---
         function renderTableHead() {
              let headHTML = `<tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="startTimeSeconds"><div class="flex items-center">Contest & Date<span class="ml-2 sort-icon"></span></div></th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="name"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Jutsu / Tags</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rank<span class="ml-2 sort-icon"></span></div></th>`;
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="startTimeSeconds"><div class="flex items-center">Contest & Date<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="name"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tags</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rating<span class="ml-2 sort-icon"></span></div></th>`;
             
             if (settings.compareHandle) {
-                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-brand-400 uppercase tracking-wider">${settings.handle}</th>`;
-                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-300 uppercase tracking-wider">${settings.compareHandle}</th>`;
+                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">${settings.handle}</th>`;
+                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">${settings.compareHandle}</th>`;
             } else {
-                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="verdict"><div class="flex items-center">Status<span class="ml-2 sort-icon"></span></div></th>`;
+                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="verdict"><div class="flex items-center">Verdict<span class="ml-2 sort-icon"></span></div></th>`;
             }
 
             headHTML += `</tr>`;
@@ -597,52 +556,46 @@
 
         function renderProblemTable(problems) {
             problemTableBody.innerHTML = problems.length === 0 
-                ? `<tr><td colspan="6" class="text-center py-10 text-slate-500">No missions found matching your criteria.</td></tr>`
+                ? `<tr><td colspan="6" class="text-center py-10 text-gray-500 dark:text-gray-400">No problems found matching your criteria.</td></tr>`
                 : problems.map(p => {
-                    const tagsHTML = (p.tags || []).map(tag => `<span class="inline-block bg-surface-700/50 border border-slate-600 rounded-full px-2 py-1 text-xs font-medium text-slate-300 mr-2 mb-1 clickable-tag" onclick="setTagFilter('${tag}')">${tag}</span>`).join('');
+                    const tagsHTML = (p.tags || []).map(tag => `<span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 mr-2 mb-1 clickable-tag" onclick="setTagFilter('${tag}')">${tag}</span>`).join('');
                     const contestDate = formatDate(p.startTimeSeconds);
-
+                    
                     let verdictHTML = '';
                     if (settings.compareHandle) {
                         const v1Obj = userData[settings.handle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                         const v2Obj = userData[settings.compareHandle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                         
-                        verdictHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v1Obj.verdict)[1]}">${v1Obj.verdict}</span>
-                                ${v1Obj.solvedDate ? `<div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(v1Obj.solvedDate)}</div>` : ''}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v2Obj.verdict)[1]}">${v2Obj.verdict}</span>
-                                ${v2Obj.solvedDate ? `<div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(v2Obj.solvedDate)}</div>` : ''}
-                            </td>`;
+                        verdictHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v1Obj.verdict)[1]}">${v1Obj.verdict}</span>
+                                          ${v1Obj.solvedDate ? `<div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">${formatDate(v1Obj.solvedDate)}</div>` : ''}
+                                       </td>
+                                       <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v2Obj.verdict)[1]}">${v2Obj.verdict}</span>
+                                          ${v2Obj.solvedDate ? `<div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">${formatDate(v2Obj.solvedDate)}</div>` : ''}
+                                       </td>`;
                     } else {
                         const vObj = userData[settings.handle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
-                        verdictHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(vObj.verdict)[1]}">${vObj.verdict}</span>
-                                ${vObj.solvedDate ? `<div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(vObj.solvedDate)}</div>` : ''}
-                            </td>`;
+                        verdictHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                                          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(vObj.verdict)[1]}">${vObj.verdict}</span>
+                                          ${vObj.solvedDate ? `<div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">${formatDate(vObj.solvedDate)}</div>` : ''}
+                                       </td>`;
                     }
 
-                    return `<tr class="hover:bg-slate-800/50 transition-colors group">
+                    return `<tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                 <td class="px-6 py-4 whitespace-normal text-sm max-w-xs">
-                                    <div class="font-semibold text-slate-300 group-hover:text-slate-100 transition-colors">${p.contestName}</div>
-                                    <div class="text-xs text-brand-500/70 mt-1 flex items-center font-medium">
-                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                        ${contestDate}
-                                    </div>
+                                    <div class="font-medium">${p.contestName}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">${contestDate}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-brand-400 hover:text-brand-300 font-semibold hover:underline">${p.name}</a></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">${p.name}</a></td>
                                 <td class="px-6 py-4 whitespace-normal text-sm max-w-xs">${tagsHTML}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-300">${p.rating || 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${p.rating || 'N/A'}</td>
                                 ${verdictHTML}
                             </tr>`;
                 }).join('');
         }
         
         function setTagFilter(tag) { tagFilterInput.value = tag; settings.filters.tag = tag.toLowerCase(); saveSettings(); applyFiltersAndRender(); }
-        
         function updateSortIcons() {
             document.querySelectorAll('.sortable').forEach(header => {
                 const icon = header.querySelector('.sort-icon');
@@ -651,20 +604,12 @@
                 } else { icon.innerHTML = ''; icon.classList.remove('active'); }
             });
         }
-        
         function renderMiniProfile(handle, container) {
             const { rating, rank, avatar } = userData[handle].userInfo;
             const rankColor = getRankColor(rank);
             const profileElement = document.createElement('div');
-            profileElement.className = 'card p-4 flex items-center space-x-4 flex-1 animate-fade-in relative overflow-hidden';
-            profileElement.innerHTML = `
-                <div class="absolute -right-4 -top-4 opacity-5 text-8xl text-brand-500 font-black rotate-12 select-none">忍</div>
-                <img src="${avatar}" class="w-14 h-14 rounded-full border border-slate-600 shadow-sm z-10">
-                <div class="flex-grow z-10">
-                    <a href="https://codeforces.com/profile/${handle}" target="_blank" class="font-bold text-xl ${rankColor} hover:underline">${handle}</a>
-                    <p class="text-sm text-slate-400 font-medium tracking-wide mt-0.5">${rank || 'Genin'} <span class="text-brand-500/50 mx-1">•</span> ${rating || 'N/A'}</p>
-                </div>
-            `;
+            profileElement.className = 'card p-4 flex items-center space-x-4 flex-1 animate-fade-in';
+            profileElement.innerHTML = `<img src="${avatar}" class="w-12 h-12 rounded-full"><div class="flex-grow"><a href="https://codeforces.com/profile/${handle}" target="_blank" class="font-bold text-lg ${rankColor} hover:underline">${handle}</a><p class="text-sm text-gray-600 dark:text-gray-400">${rank || 'Unrated'} (${rating || 'N/A'})</p></div>`;
             container.appendChild(profileElement);
         }
 
@@ -674,33 +619,32 @@
             const idSuffix = handle === settings.handle ? '1' : '2';
 
             container.innerHTML = `
-                <div class="card p-6 relative overflow-hidden">
-                    <div class="absolute -right-10 -bottom-10 opacity-[0.02] text-[12rem] text-brand-500 font-black">闘</div>
-                    <h2 class="text-lg font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3 relative z-10">Battle Stats: <span class="text-brand-400">${handle}</span></h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 relative z-10">
+                <div class="card p-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Performance: ${handle}</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                         <div>
-                            <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3 text-center">Verdict Breakdown</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 text-center">Verdict Breakdown</h3>
                             <div class="relative w-40 h-40 sm:w-52 sm:h-52 mx-auto">
                                 <canvas id="verdict-pie-chart-${idSuffix}"></canvas>
                             </div>
-                            <div id="verdict-details-${idSuffix}" class="mt-4 space-y-1.5"></div>
+                            <div id="verdict-details-${idSuffix}" class="mt-4 space-y-1"></div>
                         </div>
-                        <div class="flex flex-col justify-center pl-0 sm:pl-4 border-l-0 sm:border-l border-slate-700/50">
-                            <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Weak Points (Genjutsu)</h3>
+                        <div class="flex flex-col justify-center">
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Weakest Tags</h3>
                             <div id="weakness-detection-${idSuffix}" class="space-y-2"></div>
-                            <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3 mt-6">Next Target</h3>
-                            <div id="difficulty-suggestion-${idSuffix}" class="text-center bg-surface-900/50 border border-slate-700/50 p-4 rounded-lg shadow-inner"></div>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 mt-4">Suggestion</h3>
+                            <div id="difficulty-suggestion-${idSuffix}" class="text-center bg-gray-100 dark:bg-gray-800 p-4 rounded-lg"></div>
                         </div>
                     </div>
                 </div>
                 <div class="card p-6">
-                     <h2 class="text-lg font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3">Chakra Progression: <span class="text-brand-400">${handle}</span></h2>
-                    <div><h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Missions Completed by Rank</h3><canvas id="rating-distribution-chart-${idSuffix}" height="150"></canvas></div>
-                    <div class="mt-8">
-                         <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Target Rating Breakdown</h3>
+                     <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Skill Progression: ${handle}</h2>
+                    <div><h3 class="font-semibold text-gray-900 dark:text-white mb-2">Solved Count by Rating</h3><canvas id="rating-distribution-chart-${idSuffix}" height="150"></canvas></div>
+                    <div class="mt-6">
+                         <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Rating Breakdown (Current Selection)</h3>
                          <div id="rating-breakdown-container-${idSuffix}" class="overflow-y-auto max-h-48 pr-2"></div>
                     </div>
-                    <div class="mt-8"><h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Jutsu Mastery (Tags)</h3><div id="tag-mastery-container-${idSuffix}" class="space-y-3 overflow-y-auto max-h-56 pr-2"></div></div>
+                    <div class="mt-6"><h3 class="font-semibold text-gray-900 dark:text-white mb-2">Tag Mastery</h3><div id="tag-mastery-container-${idSuffix}" class="space-y-2 overflow-y-auto max-h-48 pr-2"></div></div>
                 </div>
             `;
             
@@ -714,7 +658,7 @@
 
         function renderVerdictPieChart(problems, submissionMap, chartId, detailsId) {
             const pieChartVerdictCounts = problems.reduce((acc, p) => {
-                const vObj = submissionMap.get(`${p.contestId}-${p.index}`) || { verdict: 'Not Attempted' };
+                const vObj = submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                 const simpleVerdict = vObj.verdict === 'Solved' || vObj.verdict === 'Not Attempted' ? vObj.verdict : 'Attempted but Wrong';
                 acc[simpleVerdict] = (acc[simpleVerdict] || 0) + 1;
                 return acc;
@@ -725,24 +669,19 @@
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(pieChartVerdictCounts),
-                    datasets: [{ 
-                        data: Object.values(pieChartVerdictCounts), 
-                        backgroundColor: Object.keys(pieChartVerdictCounts).map(v => getVerdictColor(v)[0]), 
-                        borderColor: '#1e293b', // matches surface-800
-                        borderWidth: 2
-                    }]
+                    datasets: [{ data: Object.values(pieChartVerdictCounts), backgroundColor: Object.keys(pieChartVerdictCounts).map(v => getVerdictColor(v)[0]), borderColor: settings.theme === 'dark' ? '#182030' : '#ffffff', borderWidth: 2 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '55%' }
             });
 
             const detailedVerdictCounts = problems.reduce((acc, p) => {
-                const vObj = submissionMap.get(`${p.contestId}-${p.index}`) || { verdict: 'Not Attempted' };
+                const vObj = submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                 acc[vObj.verdict] = (acc[vObj.verdict] || 0) + 1;
                 return acc;
             }, {});
             document.getElementById(detailsId).innerHTML = Object.entries(detailedVerdictCounts).sort((a,b) => b[1] - a[1]).map(([verdict, count]) => {
                 const [colorHex, ] = getVerdictColor(verdict);
-                return `<div class="flex justify-between items-center text-sm"><span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full mr-2 opacity-80" style="background-color: ${colorHex};"></span><span class="font-medium text-slate-300">${verdict}</span></span><span class="font-semibold text-slate-200">${count}</span></div>`;
+                return `<div class="flex justify-between items-center text-sm"><span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colorHex};"></span><span class="font-medium">${verdict}</span></span><span class="font-bold">${count}</span></div>`;
             }).join('');
         }
         
@@ -759,22 +698,8 @@
             if(charts[chartId]) charts[chartId].destroy();
             charts[chartId] = new Chart(ctx, {
                 type: 'bar',
-                data: { 
-                    labels: sortedRatings.map(String), 
-                    datasets: [{ 
-                        label: 'Total Solved', 
-                        data: sortedRatings.map(r => solvedByRating[r]), 
-                        backgroundColor: '#f59e0b', // brand-500
-                        borderRadius: 3
-                    }] 
-                },
-                options: { 
-                    scales: { 
-                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8', font: {family: 'Inter'} } }, 
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: {family: 'Inter'} } } 
-                    }, 
-                    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0f172a', titleColor: '#fb923c', bodyColor: '#f1f5f9', padding: 10, callbacks: { title: ctx => `Rank: ${ctx[0].label}` } } } 
-                }
+                data: { labels: sortedRatings.map(String), datasets: [{ label: 'Total Solved', data: sortedRatings.map(r => solvedByRating[r]), backgroundColor: '#4f46e5' }] },
+                options: { scales: { y: { beginAtZero: true, ticks: { color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280' } }, x: { ticks: { color: settings.theme === 'dark' ? '#9ca3af' : '#6b7280' } } }, plugins: { legend: { display: false }, tooltip: { callbacks: { title: ctx => `Rating: ${ctx[0].label}` } } } }
             });
         }
 
@@ -792,19 +717,19 @@
 
             const tableHTML = `
                 <table class="w-full text-sm text-left">
-                    <thead class="text-[11px] text-slate-400 uppercase bg-surface-900 sticky top-0 font-semibold border-b border-slate-700">
+                    <thead class="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-100 dark:bg-gray-800 sticky top-0">
                         <tr>
-                            <th scope="col" class="px-4 py-2.5">Rank</th>
-                            <th scope="col" class="px-4 py-2.5 text-center">My Solved</th>
-                            <th scope="col" class="px-4 py-2.5 text-center">Total Targets</th>
+                            <th scope="col" class="px-4 py-2">Rating</th>
+                            <th scope="col" class="px-4 py-2 text-center">My Solved</th>
+                            <th scope="col" class="px-4 py-2 text-center">Total Problems</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-700/50">
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                         ${sortedRatings.map(([rating, data]) => `
-                            <tr class="hover:bg-slate-700/20 transition-colors">
-                                <td class="px-4 py-2.5 font-medium text-slate-300">${rating}</td>
-                                <td class="px-4 py-2.5 text-center font-semibold text-brand-400">${data.solved}</td>
-                                <td class="px-4 py-2.5 text-center text-slate-500 font-medium">${data.total}</td>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-4 py-2 font-medium">${rating}</td>
+                                <td class="px-4 py-2 text-center font-semibold text-green-600 dark:text-green-400">${data.solved}</td>
+                                <td class="px-4 py-2 text-center">${data.total}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -823,12 +748,7 @@
             const sortedTags = Object.entries(tagData).sort((a,b) => b[1].total - a[1].total);
             document.getElementById(containerId).innerHTML = sortedTags.slice(0, 10).map(([tag, data]) => {
                 const mastery = data.total > 0 ? (data.solved / data.total) * 100 : 0;
-                return `<div class="text-sm">
-                            <div class="flex justify-between mb-1.5"><span class="font-medium text-slate-300">${tag}</span><span class="text-slate-500 text-xs font-semibold">${data.solved}/${data.total}</span></div>
-                            <div class="w-full bg-surface-900 rounded-full h-2 overflow-hidden border border-slate-700/50">
-                                <div class="bg-brand-500 h-2 rounded-full opacity-90" style="width: ${mastery}%"></div>
-                            </div>
-                        </div>`;
+                return `<div class="text-sm"><div class="flex justify-between mb-1"><span class="font-medium">${tag}</span><span class="text-gray-500 dark:text-gray-400">${data.solved}/${data.total}</span></div><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2"><div class="bg-indigo-600 h-2 rounded-full" style="width: ${mastery}%"></div></div></div>`;
             }).join('');
         }
 
@@ -845,8 +765,8 @@
             });
             const weaknesses = Object.entries(tagData).map(([tag, data]) => ({ tag, success: data.attempted.size > 0 ? data.solved.size / data.attempted.size : 0, attempted: data.attempted.size })).filter(item => item.attempted >= 5).sort((a, b) => a.success - b.success);
             document.getElementById(containerId).innerHTML = weaknesses.length > 0
-                ? weaknesses.slice(0, 3).map(w => `<div class="text-sm flex justify-between items-center bg-surface-900/50 px-3 py-2.5 rounded-md border-l-[3px] border-rose-400/80"><span class="text-slate-300 font-medium">${w.tag}</span><span class="text-xs font-semibold text-rose-400">${(w.success * 100).toFixed(0)}% success</span></div>`).join('')
-                : `<p class="text-sm text-slate-500 italic">Gathering more intel on your weaknesses...</p>`;
+                ? weaknesses.slice(0, 3).map(w => `<div class="text-sm flex justify-between items-center"><span class="text-red-500 dark:text-red-400 font-semibold">${w.tag}</span><span class="text-xs text-gray-500">${(w.success * 100).toFixed(0)}% success</span></div>`).join('')
+                : `<p class="text-sm text-gray-500">Not enough data. Keep practicing!</p>`;
         }
 
         function renderDifficultySuggestion(problems, submissionMap, containerId) {
@@ -863,35 +783,32 @@
                 if (data.total > 2 && (data.solved / data.total) > 0.6) comfortRating = Number(rating);
             }
             document.getElementById(containerId).innerHTML = comfortRating > 0
-                ? `<p class="text-sm text-slate-400">You clear >60% of <strong class="text-slate-200 font-medium">${comfortRating}</strong> rank missions.</p>
-                   <p class="text-base font-semibold mt-2">Challenge a <span class="text-brand-400 text-lg ml-1">${comfortRating + 100}</span> target!</p>`
-                : `<p class="text-sm text-slate-500 italic">Complete more missions to unlock your next target tier!</p>`;
+                ? `<p class="text-sm text-gray-600 dark:text-gray-400">You solve >60% of <strong class="text-gray-900 dark:text-white">${comfortRating}</strong>s. Try <strong class="text-indigo-600 dark:text-indigo-400">${comfortRating + 100}</strong> problems next!</p>`
+                : `<p class="text-sm text-gray-600 dark:text-gray-400">Solve more to get a suggestion!</p>`;
         }
         
         // --- Utility Functions ---
         function getVerdictColor(verdict) {
-            // Softened the colors significantly for less eye strain
             const colors = {
-                'Solved': ['#f59e0b', 'bg-amber-500/10 text-amber-500 border border-amber-500/20'], // Brand amber
-                'Not Attempted': ['#64748b', 'bg-slate-800 text-slate-400 border border-slate-700'],
-                'Attempted but Wrong': ['#fb7185', 'bg-rose-500/10 text-rose-400 border border-rose-500/20'],
-                'WRONG ANSWER': ['#fb7185', 'bg-rose-500/10 text-rose-400 border border-rose-500/20'],
-                'TIME LIMIT EXCEEDED': ['#fbbf24', 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'],
-                'MEMORY LIMIT EXCEEDED': ['#fdba74', 'bg-orange-500/10 text-orange-400 border border-orange-500/20'],
-                'RUNTIME ERROR': ['#c084fc', 'bg-purple-500/10 text-purple-400 border border-purple-500/20'],
-                'COMPILATION ERROR': ['#f472b6', 'bg-pink-500/10 text-pink-400 border border-pink-500/20'],
+                'Solved': ['#10b981', 'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400'],
+                'Not Attempted': ['#6b7280', 'bg-gray-100 text-gray-800 dark:bg-gray-400/10 dark:text-gray-400'],
+                'Attempted but Wrong': ['#ef4444', 'bg-red-100 text-red-800 dark:bg-red-400/10 dark:text-red-400'],
+                'WRONG ANSWER': ['#ef4444', 'bg-red-100 text-red-800 dark:bg-red-400/10 dark:text-red-400'],
+                'TIME LIMIT EXCEEDED': ['#f59e0b', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400'],
+                'MEMORY LIMIT EXCEEDED': ['#f97316', 'bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400'],
+                'RUNTIME ERROR': ['#8b5cf6', 'bg-purple-100 text-purple-800 dark:bg-purple-500/10 dark:text-purple-400'],
+                'COMPILATION ERROR': ['#ec4899', 'bg-pink-100 text-pink-800 dark:bg-pink-500/10 dark:text-pink-400'],
             };
             return colors[verdict] || colors['Attempted but Wrong'];
         }
-        
         function getRankColor(rank) {
-            if (!rank) return 'text-slate-500';
-            if (rank.includes('Grandmaster')) return 'text-rose-500';
-            if (rank.includes('Master')) return 'text-amber-500'; // brand
-            if (rank.includes('Candidate')) return 'text-purple-400';
-            if (rank.includes('Expert')) return 'text-blue-400';
-            if (rank.includes('Specialist')) return 'text-teal-400';
-            return 'text-emerald-400';
+            if (!rank) return 'text-gray-500';
+            if (rank.includes('Grandmaster')) return 'text-red-500';
+            if (rank.includes('Master')) return 'text-yellow-500';
+            if (rank.includes('Candidate')) return 'text-purple-500';
+            if (rank.includes('Expert')) return 'text-blue-500';
+            if (rank.includes('Specialist')) return 'text-cyan-500';
+            return 'text-green-500';
         }
     </script>
 </body>
