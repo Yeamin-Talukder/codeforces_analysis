@@ -13,19 +13,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class', // Locked to dark mode for the Naruto theme
+            darkMode: 'class', 
             theme: {
                 extend: {
                     colors: {
-                        orange: {
-                            400: '#ff8c00', // vibrant accent
-                            500: '#ff6600', // primary naruto orange
-                            600: '#e65c00', // hover states
-                            700: '#cc5200', 
+                        // Softer, eye-friendly amber/ember instead of glaring orange
+                        brand: {
+                            400: '#fb923c', // soft orange
+                            500: '#f59e0b', // calm amber
+                            600: '#d97706', 
+                            700: '#b45309', 
                         },
-                        gray: {
-                            850: '#141414', // card background
-                            900: '#0a0a0a', // body background
+                        // Cooling slate grays instead of harsh pure blacks
+                        surface: {
+                            700: '#334155', // borders
+                            800: '#1e293b', // cards
+                            900: '#0f172a', // deep background
                         },
                     },
                     fontFamily: {
@@ -46,51 +49,51 @@
     </script>
     <style>
         body {
-            background-color: #0a0a0a;
-            color: #d1d5db;
+            background-color: #0f172a; /* surface-900 */
+            color: #cbd5e1; /* slate-300 */
         }
         
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ff6600; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
         .card {
-            background-color: #141414;
-            border: 1px solid rgba(255, 102, 0, 0.15); /* Subtle orange border */
+            background-color: #1e293b; /* surface-800 */
+            border: 1px solid rgba(51, 65, 85, 0.6); /* slate-700 */
             border-radius: 0.75rem;
-            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease-in-out;
         }
         .card:hover {
-            border-color: rgba(255, 102, 0, 0.4);
-            box-shadow: 0 8px 25px -2px rgba(255, 102, 0, 0.1);
+            border-color: rgba(245, 158, 11, 0.25); /* brand-500 subtle */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
         #progress-bar { transition: width 0.3s ease-in-out; }
         
         .form-input {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            color: white;
+            background-color: #0f172a; /* surface-900 */
+            border: 1px solid #334155; /* slate-700 */
+            color: #f1f5f9; /* slate-100 */
         }
         .form-input:focus {
              outline: none;
-             border-color: #ff6600;
-             box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.3);
+             border-color: #f59e0b; /* brand-500 */
+             box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
         }
         
-        .sortable:hover { background-color: #1f1f1f; }
-        .sort-icon { opacity: 0.5; transition: opacity 0.2s ease-in-out; }
-        .sortable:hover .sort-icon { opacity: 1; }
-        .sort-icon.active { opacity: 1; color: #ff6600; }
+        .sortable:hover { background-color: rgba(51, 65, 85, 0.3); } /* slate-700 subtle */
+        .sort-icon { opacity: 0.4; transition: opacity 0.2s ease-in-out; }
+        .sortable:hover .sort-icon { opacity: 0.8; }
+        .sort-icon.active { opacity: 1; color: #f59e0b; }
         
         .clickable-tag { cursor: pointer; transition: all 0.2s; }
-        .clickable-tag:hover { background-color: #ff6600; color: white; }
+        .clickable-tag:hover { background-color: #f59e0b; color: #fff; }
         
         .glow-text {
-            text-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
         }
     </style>
 </head>
@@ -100,9 +103,9 @@
         <!-- Header -->
         <header class="mb-10">
             <div class="flex justify-between items-center mb-4">
-                 <h1 class="text-3xl md:text-4xl font-extrabold text-white flex items-center gap-3">
-                    <span class="text-orange-500">忍</span> 
-                    CF Dashboard <span class="text-orange-500 glow-text hidden sm:inline">Shinobi</span>
+                 <h1 class="text-3xl md:text-4xl font-extrabold text-slate-100 flex items-center gap-3">
+                    <span class="text-brand-500">忍</span> 
+                    CF Dashboard <span class="text-brand-400 glow-text hidden sm:inline">Soft Night</span>
                  </h1>
             </div>
             <div id="mini-profile-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -111,12 +114,12 @@
         <main class="grid grid-cols-1">
              <!-- Control Panel Full Width -->
             <div class="card p-6 mb-8">
-                <h2 class="text-xl font-bold text-white mb-4 border-b border-orange-500/20 pb-3 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                <h2 class="text-xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                     Mission Parameters
                 </h2>
                 <form id="control-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
-                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-gray-400">Division</label>
+                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-slate-400">Division</label>
                         <select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input">
                             <option>Div. 1</option>
                             <option selected>Only Div. 2</option>
@@ -131,23 +134,23 @@
                             <option>VK Cup</option>
                         </select>
                     </div>
-                    <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-gray-400">Index</label>
+                    <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-slate-400">Index</label>
                         <select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input">
                             <option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option>
                         </select>
                     </div>
-                    <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-gray-400">Problems</label>
+                    <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-slate-400">Problems</label>
                         <input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input">
                     </div>
-                    <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-gray-400">Your Handle</label>
-                        <input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-orange-400 font-bold tracking-wide">
+                    <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-slate-400">Your Handle</label>
+                        <input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-brand-400 font-bold tracking-wide">
                     </div>
-                    <div class="lg:col-span-1"><label for="compare-handle" class="block text-sm font-medium text-gray-400">Rival Handle</label>
+                    <div class="lg:col-span-1"><label for="compare-handle" class="block text-sm font-medium text-slate-400">Rival Handle</label>
                         <input type="text" name="compare-handle" id="compare-handle" placeholder="e.g., Petr" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input">
                     </div>
                     <div class="lg:col-span-1 grid grid-cols-2 gap-2">
-                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-orange-500 transition-colors">Fetch</button>
-                        <button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-300 bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500 transition-colors">Reset</button>
+                        <button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-slate-900 bg-brand-500 hover:bg-brand-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-900 focus:ring-brand-500 transition-colors">Fetch</button>
+                        <button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-300 bg-surface-800 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-900 focus:ring-slate-500 transition-colors">Reset</button>
                     </div>
                 </form>
             </div>
@@ -178,34 +181,34 @@
                         </div>
                         
                         <div id="initial-message" class="text-center py-20">
-                            <svg class="mx-auto h-16 w-16 text-orange-500/50 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="mx-auto h-16 w-16 text-slate-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
-                            <h3 class="mt-2 text-xl font-bold text-white">Awaiting Orders</h3>
-                            <p class="mt-1 text-sm text-gray-400">Enter your handle to begin your training.</p>
+                            <h3 class="mt-2 text-xl font-bold text-slate-200">Awaiting Orders</h3>
+                            <p class="mt-1 text-sm text-slate-400">Enter your handle to begin your training.</p>
                         </div>
                         
                         <div id="loader-container" class="text-center py-20 hidden">
-                            <div class="w-full bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
-                                <div id="progress-bar" class="bg-orange-500 h-2 rounded-full relative" style="width: 0%">
+                            <div class="w-full bg-slate-800 rounded-full h-2 mb-4 overflow-hidden">
+                                <div id="progress-bar" class="bg-brand-500 h-2 rounded-full relative" style="width: 0%">
                                     <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
                                 </div>
                             </div>
-                            <p id="progress-text" class="mt-4 text-sm font-medium text-orange-400 animate-pulse">Gathering Intel...</p>
+                            <p id="progress-text" class="mt-4 text-sm font-medium text-brand-400 animate-pulse">Gathering Intel...</p>
                         </div>
                         
                         <div id="error-message" class="text-center py-20 hidden">
-                            <svg class="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="mx-auto h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                             </svg>
-                            <h3 class="mt-2 text-lg font-bold text-red-500">Mission Failed</h3>
-                            <p class="mt-1 text-sm text-red-400" id="error-text"></p>
+                            <h3 class="mt-2 text-lg font-bold text-red-400">Mission Failed</h3>
+                            <p class="mt-1 text-sm text-red-300" id="error-text"></p>
                         </div>
                         
                         <div id="table-container" class="hidden overflow-x-auto">
-                           <table class="min-w-full divide-y divide-gray-800">
-                                <thead id="problem-table-head" class="bg-gray-900/50"></thead>
-                                <tbody id="problem-table-body" class="divide-y divide-gray-800"></tbody>
+                           <table class="min-w-full divide-y divide-slate-700">
+                                <thead id="problem-table-head" class="bg-slate-800/50"></thead>
+                                <tbody id="problem-table-body" class="divide-y divide-slate-700/50"></tbody>
                             </table>
                         </div>
                     </div>
@@ -296,8 +299,8 @@
                 if (!keysToKeep.includes(key)) localStorage.removeItem(key);
             }
             const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50';
-            modal.innerHTML = `<div class="bg-gray-900 border border-orange-500 text-white p-6 rounded-lg shadow-[0_0_20px_rgba(255,102,0,0.4)] font-bold">Local Intel Cleared!</div>`;
+            modal.className = 'fixed inset-0 bg-surface-900/80 flex items-center justify-center z-50 backdrop-blur-sm';
+            modal.innerHTML = `<div class="bg-surface-800 border border-brand-500 text-slate-200 p-6 rounded-lg shadow-lg font-medium">Local Intel Cleared!</div>`;
             document.body.appendChild(modal);
             setTimeout(() => modal.remove(), 1500);
         });
@@ -339,7 +342,7 @@
         // --- UI State Functions ---
         function showLoading() {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Fetching';
+            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-slate-900 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Fetching';
             initialMessage.classList.add('hidden');
             errorMessage.classList.add('hidden');
             tableContainer.classList.add('hidden');
@@ -575,16 +578,16 @@
         // --- Rendering Functions ---
         function renderTableHead() {
              let headHTML = `<tr>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="startTimeSeconds"><div class="flex items-center">Contest & Date<span class="ml-2 sort-icon"></span></div></th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="name"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Jutsu / Tags</th>
-                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rank<span class="ml-2 sort-icon"></span></div></th>`;
+                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="startTimeSeconds"><div class="flex items-center">Contest & Date<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="name"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Jutsu / Tags</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rank<span class="ml-2 sort-icon"></span></div></th>`;
             
             if (settings.compareHandle) {
-                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-orange-400 uppercase tracking-wider">${settings.handle}</th>`;
-                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-red-400 uppercase tracking-wider">${settings.compareHandle}</th>`;
+                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-brand-400 uppercase tracking-wider">${settings.handle}</th>`;
+                headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-300 uppercase tracking-wider">${settings.compareHandle}</th>`;
             } else {
-                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="verdict"><div class="flex items-center">Status<span class="ml-2 sort-icon"></span></div></th>`;
+                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase tracking-wider sortable cursor-pointer" data-sort="verdict"><div class="flex items-center">Status<span class="ml-2 sort-icon"></span></div></th>`;
             }
 
             headHTML += `</tr>`;
@@ -594,9 +597,9 @@
 
         function renderProblemTable(problems) {
             problemTableBody.innerHTML = problems.length === 0 
-                ? `<tr><td colspan="6" class="text-center py-10 text-gray-500">No missions found matching your criteria.</td></tr>`
+                ? `<tr><td colspan="6" class="text-center py-10 text-slate-500">No missions found matching your criteria.</td></tr>`
                 : problems.map(p => {
-                    const tagsHTML = (p.tags || []).map(tag => `<span class="inline-block bg-gray-800 border border-gray-700 rounded-full px-2 py-1 text-xs font-semibold text-gray-300 mr-2 mb-1 clickable-tag" onclick="setTagFilter('${tag}')">${tag}</span>`).join('');
+                    const tagsHTML = (p.tags || []).map(tag => `<span class="inline-block bg-surface-700/50 border border-slate-600 rounded-full px-2 py-1 text-xs font-medium text-slate-300 mr-2 mb-1 clickable-tag" onclick="setTagFilter('${tag}')">${tag}</span>`).join('');
                     const contestDate = formatDate(p.startTimeSeconds);
 
                     let verdictHTML = '';
@@ -605,34 +608,34 @@
                         const v2Obj = userData[settings.compareHandle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                         
                         verdictHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
-                                <span class="px-2 inline-flex text-xs leading-5 font-bold rounded-full ${getVerdictColor(v1Obj.verdict)[1]}">${v1Obj.verdict}</span>
-                                ${v1Obj.solvedDate ? `<div class="text-xs font-medium text-gray-500 mt-1 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(v1Obj.solvedDate)}</div>` : ''}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v1Obj.verdict)[1]}">${v1Obj.verdict}</span>
+                                ${v1Obj.solvedDate ? `<div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(v1Obj.solvedDate)}</div>` : ''}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
-                                <span class="px-2 inline-flex text-xs leading-5 font-bold rounded-full ${getVerdictColor(v2Obj.verdict)[1]}">${v2Obj.verdict}</span>
-                                ${v2Obj.solvedDate ? `<div class="text-xs font-medium text-gray-500 mt-1 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(v2Obj.solvedDate)}</div>` : ''}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v2Obj.verdict)[1]}">${v2Obj.verdict}</span>
+                                ${v2Obj.solvedDate ? `<div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(v2Obj.solvedDate)}</div>` : ''}
                             </td>`;
                     } else {
                         const vObj = userData[settings.handle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                         verdictHTML = `
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
-                                <span class="px-2 inline-flex text-xs leading-5 font-bold rounded-full ${getVerdictColor(vObj.verdict)[1]}">${vObj.verdict}</span>
-                                ${vObj.solvedDate ? `<div class="text-xs font-medium text-gray-500 mt-1 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(vObj.solvedDate)}</div>` : ''}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(vObj.verdict)[1]}">${vObj.verdict}</span>
+                                ${vObj.solvedDate ? `<div class="text-xs font-medium text-slate-500 mt-1.5 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${formatDate(vObj.solvedDate)}</div>` : ''}
                             </td>`;
                     }
 
-                    return `<tr class="hover:bg-[#1a1a1a] transition-colors group">
+                    return `<tr class="hover:bg-slate-800/50 transition-colors group">
                                 <td class="px-6 py-4 whitespace-normal text-sm max-w-xs">
-                                    <div class="font-bold text-gray-200 group-hover:text-white transition-colors">${p.contestName}</div>
-                                    <div class="text-xs text-orange-500/80 mt-1 flex items-center">
+                                    <div class="font-semibold text-slate-300 group-hover:text-slate-100 transition-colors">${p.contestName}</div>
+                                    <div class="text-xs text-brand-500/70 mt-1 flex items-center font-medium">
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                         ${contestDate}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-orange-400 hover:text-orange-300 font-bold hover:underline glow-text">${p.name}</a></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-brand-400 hover:text-brand-300 font-semibold hover:underline">${p.name}</a></td>
                                 <td class="px-6 py-4 whitespace-normal text-sm max-w-xs">${tagsHTML}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-300">${p.rating || 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-300">${p.rating || 'N/A'}</td>
                                 ${verdictHTML}
                             </tr>`;
                 }).join('');
@@ -655,11 +658,11 @@
             const profileElement = document.createElement('div');
             profileElement.className = 'card p-4 flex items-center space-x-4 flex-1 animate-fade-in relative overflow-hidden';
             profileElement.innerHTML = `
-                <div class="absolute -right-4 -top-4 opacity-5 text-8xl text-orange-500 font-black rotate-12 select-none">忍</div>
-                <img src="${avatar}" class="w-14 h-14 rounded-full border-2 border-orange-500/50 shadow-[0_0_10px_rgba(255,102,0,0.5)] z-10">
+                <div class="absolute -right-4 -top-4 opacity-5 text-8xl text-brand-500 font-black rotate-12 select-none">忍</div>
+                <img src="${avatar}" class="w-14 h-14 rounded-full border border-slate-600 shadow-sm z-10">
                 <div class="flex-grow z-10">
-                    <a href="https://codeforces.com/profile/${handle}" target="_blank" class="font-extrabold text-xl ${rankColor} hover:underline">${handle}</a>
-                    <p class="text-sm text-gray-400 font-medium uppercase tracking-wide mt-0.5">${rank || 'Genin'} <span class="text-orange-500">•</span> ${rating || 'N/A'}</p>
+                    <a href="https://codeforces.com/profile/${handle}" target="_blank" class="font-bold text-xl ${rankColor} hover:underline">${handle}</a>
+                    <p class="text-sm text-slate-400 font-medium tracking-wide mt-0.5">${rank || 'Genin'} <span class="text-brand-500/50 mx-1">•</span> ${rating || 'N/A'}</p>
                 </div>
             `;
             container.appendChild(profileElement);
@@ -672,30 +675,32 @@
 
             container.innerHTML = `
                 <div class="card p-6 relative overflow-hidden">
-                    <div class="absolute -right-10 -bottom-10 opacity-[0.02] text-[12rem] text-orange-500 font-black">闘</div>
-                    <h2 class="text-xl font-bold text-white mb-4 border-b border-orange-500/20 pb-3 relative z-10">Battle Stats: <span class="text-orange-500">${handle}</span></h2>
+                    <div class="absolute -right-10 -bottom-10 opacity-[0.02] text-[12rem] text-brand-500 font-black">闘</div>
+                    <h2 class="text-lg font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3 relative z-10">Battle Stats: <span class="text-brand-400">${handle}</span></h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 relative z-10">
                         <div>
-                            <h3 class="font-bold text-gray-400 uppercase tracking-wider text-xs mb-3 text-center">Verdict Breakdown</h3>
-                            <canvas id="verdict-pie-chart-${idSuffix}"></canvas>
+                            <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3 text-center">Verdict Breakdown</h3>
+                            <div class="relative w-40 h-40 sm:w-52 sm:h-52 mx-auto">
+                                <canvas id="verdict-pie-chart-${idSuffix}"></canvas>
+                            </div>
                             <div id="verdict-details-${idSuffix}" class="mt-4 space-y-1.5"></div>
                         </div>
-                        <div class="flex flex-col justify-center pl-0 sm:pl-4 border-l-0 sm:border-l border-gray-800">
-                            <h3 class="font-bold text-gray-400 uppercase tracking-wider text-xs mb-3">Weak Points (Genjutsu)</h3>
+                        <div class="flex flex-col justify-center pl-0 sm:pl-4 border-l-0 sm:border-l border-slate-700/50">
+                            <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Weak Points (Genjutsu)</h3>
                             <div id="weakness-detection-${idSuffix}" class="space-y-2"></div>
-                            <h3 class="font-bold text-gray-400 uppercase tracking-wider text-xs mb-3 mt-6">Next Target</h3>
-                            <div id="difficulty-suggestion-${idSuffix}" class="text-center bg-[#0a0a0a] border border-orange-500/20 p-4 rounded-lg shadow-inner"></div>
+                            <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3 mt-6">Next Target</h3>
+                            <div id="difficulty-suggestion-${idSuffix}" class="text-center bg-surface-900/50 border border-slate-700/50 p-4 rounded-lg shadow-inner"></div>
                         </div>
                     </div>
                 </div>
                 <div class="card p-6">
-                     <h2 class="text-xl font-bold text-white mb-4 border-b border-orange-500/20 pb-3">Chakra Progression: <span class="text-orange-500">${handle}</span></h2>
-                    <div><h3 class="font-bold text-gray-400 uppercase tracking-wider text-xs mb-3">Missions Completed by Rank</h3><canvas id="rating-distribution-chart-${idSuffix}" height="150"></canvas></div>
+                     <h2 class="text-lg font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3">Chakra Progression: <span class="text-brand-400">${handle}</span></h2>
+                    <div><h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Missions Completed by Rank</h3><canvas id="rating-distribution-chart-${idSuffix}" height="150"></canvas></div>
                     <div class="mt-8">
-                         <h3 class="font-bold text-gray-400 uppercase tracking-wider text-xs mb-3">Target Rating Breakdown</h3>
+                         <h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Target Rating Breakdown</h3>
                          <div id="rating-breakdown-container-${idSuffix}" class="overflow-y-auto max-h-48 pr-2"></div>
                     </div>
-                    <div class="mt-8"><h3 class="font-bold text-gray-400 uppercase tracking-wider text-xs mb-3">Jutsu Mastery (Tags)</h3><div id="tag-mastery-container-${idSuffix}" class="space-y-3 overflow-y-auto max-h-56 pr-2"></div></div>
+                    <div class="mt-8"><h3 class="font-semibold text-slate-400 uppercase tracking-wider text-[11px] mb-3">Jutsu Mastery (Tags)</h3><div id="tag-mastery-container-${idSuffix}" class="space-y-3 overflow-y-auto max-h-56 pr-2"></div></div>
                 </div>
             `;
             
@@ -723,11 +728,11 @@
                     datasets: [{ 
                         data: Object.values(pieChartVerdictCounts), 
                         backgroundColor: Object.keys(pieChartVerdictCounts).map(v => getVerdictColor(v)[0]), 
-                        borderColor: '#141414',
+                        borderColor: '#1e293b', // matches surface-800
                         borderWidth: 2
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, cutout: '70%' }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '55%' }
             });
 
             const detailedVerdictCounts = problems.reduce((acc, p) => {
@@ -737,7 +742,7 @@
             }, {});
             document.getElementById(detailsId).innerHTML = Object.entries(detailedVerdictCounts).sort((a,b) => b[1] - a[1]).map(([verdict, count]) => {
                 const [colorHex, ] = getVerdictColor(verdict);
-                return `<div class="flex justify-between items-center text-sm"><span class="flex items-center"><span class="w-2 h-2 rounded-full mr-2" style="background-color: ${colorHex}; box-shadow: 0 0 5px ${colorHex}"></span><span class="font-medium text-gray-300">${verdict}</span></span><span class="font-bold text-white">${count}</span></div>`;
+                return `<div class="flex justify-between items-center text-sm"><span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full mr-2 opacity-80" style="background-color: ${colorHex};"></span><span class="font-medium text-slate-300">${verdict}</span></span><span class="font-semibold text-slate-200">${count}</span></div>`;
             }).join('');
         }
         
@@ -759,16 +764,16 @@
                     datasets: [{ 
                         label: 'Total Solved', 
                         data: sortedRatings.map(r => solvedByRating[r]), 
-                        backgroundColor: '#ff6600',
-                        borderRadius: 4
+                        backgroundColor: '#f59e0b', // brand-500
+                        borderRadius: 3
                     }] 
                 },
                 options: { 
                     scales: { 
-                        y: { beginAtZero: true, grid: { color: '#333' }, ticks: { color: '#9ca3af', font: {family: 'Inter', weight: 'bold'} } }, 
-                        x: { grid: { display: false }, ticks: { color: '#9ca3af', font: {family: 'Inter', weight: 'bold'} } } 
+                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8', font: {family: 'Inter'} } }, 
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: {family: 'Inter'} } } 
                     }, 
-                    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a1a', titleColor: '#ff8c00', bodyColor: '#fff', callbacks: { title: ctx => `Rank: ${ctx[0].label}` } } } 
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0f172a', titleColor: '#fb923c', bodyColor: '#f1f5f9', padding: 10, callbacks: { title: ctx => `Rank: ${ctx[0].label}` } } } 
                 }
             });
         }
@@ -787,19 +792,19 @@
 
             const tableHTML = `
                 <table class="w-full text-sm text-left">
-                    <thead class="text-xs text-gray-400 uppercase bg-[#0a0a0a] sticky top-0 font-bold border-b border-gray-800">
+                    <thead class="text-[11px] text-slate-400 uppercase bg-surface-900 sticky top-0 font-semibold border-b border-slate-700">
                         <tr>
-                            <th scope="col" class="px-4 py-2">Rank</th>
-                            <th scope="col" class="px-4 py-2 text-center">My Solved</th>
-                            <th scope="col" class="px-4 py-2 text-center">Total Targets</th>
+                            <th scope="col" class="px-4 py-2.5">Rank</th>
+                            <th scope="col" class="px-4 py-2.5 text-center">My Solved</th>
+                            <th scope="col" class="px-4 py-2.5 text-center">Total Targets</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-800">
+                    <tbody class="divide-y divide-slate-700/50">
                         ${sortedRatings.map(([rating, data]) => `
-                            <tr class="hover:bg-[#1f1f1f] transition-colors">
-                                <td class="px-4 py-2 font-bold text-gray-200">${rating}</td>
-                                <td class="px-4 py-2 text-center font-bold text-orange-500">${data.solved}</td>
-                                <td class="px-4 py-2 text-center text-gray-400 font-semibold">${data.total}</td>
+                            <tr class="hover:bg-slate-700/20 transition-colors">
+                                <td class="px-4 py-2.5 font-medium text-slate-300">${rating}</td>
+                                <td class="px-4 py-2.5 text-center font-semibold text-brand-400">${data.solved}</td>
+                                <td class="px-4 py-2.5 text-center text-slate-500 font-medium">${data.total}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -819,9 +824,9 @@
             document.getElementById(containerId).innerHTML = sortedTags.slice(0, 10).map(([tag, data]) => {
                 const mastery = data.total > 0 ? (data.solved / data.total) * 100 : 0;
                 return `<div class="text-sm">
-                            <div class="flex justify-between mb-1.5"><span class="font-bold text-gray-300">${tag}</span><span class="text-gray-500 font-mono font-semibold">${data.solved}/${data.total}</span></div>
-                            <div class="w-full bg-[#0a0a0a] rounded-full h-2.5 overflow-hidden border border-gray-800">
-                                <div class="bg-gradient-to-r from-orange-600 to-orange-400 h-2.5 rounded-full" style="width: ${mastery}%"></div>
+                            <div class="flex justify-between mb-1.5"><span class="font-medium text-slate-300">${tag}</span><span class="text-slate-500 text-xs font-semibold">${data.solved}/${data.total}</span></div>
+                            <div class="w-full bg-surface-900 rounded-full h-2 overflow-hidden border border-slate-700/50">
+                                <div class="bg-brand-500 h-2 rounded-full opacity-90" style="width: ${mastery}%"></div>
                             </div>
                         </div>`;
             }).join('');
@@ -840,8 +845,8 @@
             });
             const weaknesses = Object.entries(tagData).map(([tag, data]) => ({ tag, success: data.attempted.size > 0 ? data.solved.size / data.attempted.size : 0, attempted: data.attempted.size })).filter(item => item.attempted >= 5).sort((a, b) => a.success - b.success);
             document.getElementById(containerId).innerHTML = weaknesses.length > 0
-                ? weaknesses.slice(0, 3).map(w => `<div class="text-sm flex justify-between items-center bg-[#1a1a1a] px-3 py-2 rounded-md border-l-2 border-red-500"><span class="text-gray-300 font-bold">${w.tag}</span><span class="text-xs font-mono font-bold text-red-500">${(w.success * 100).toFixed(0)}% success</span></div>`).join('')
-                : `<p class="text-sm text-gray-500 italic">Gathering more intel on your weaknesses...</p>`;
+                ? weaknesses.slice(0, 3).map(w => `<div class="text-sm flex justify-between items-center bg-surface-900/50 px-3 py-2.5 rounded-md border-l-[3px] border-rose-400/80"><span class="text-slate-300 font-medium">${w.tag}</span><span class="text-xs font-semibold text-rose-400">${(w.success * 100).toFixed(0)}% success</span></div>`).join('')
+                : `<p class="text-sm text-slate-500 italic">Gathering more intel on your weaknesses...</p>`;
         }
 
         function renderDifficultySuggestion(problems, submissionMap, containerId) {
@@ -858,33 +863,35 @@
                 if (data.total > 2 && (data.solved / data.total) > 0.6) comfortRating = Number(rating);
             }
             document.getElementById(containerId).innerHTML = comfortRating > 0
-                ? `<p class="text-sm text-gray-400">You clear >60% of <strong class="text-white">${comfortRating}</strong> rank missions.</p>
-                   <p class="text-base font-bold mt-2">Challenge a <span class="text-orange-500 glow-text text-xl ml-1">${comfortRating + 100}</span> target!</p>`
-                : `<p class="text-sm text-gray-500 italic">Complete more missions to unlock your next target tier!</p>`;
+                ? `<p class="text-sm text-slate-400">You clear >60% of <strong class="text-slate-200 font-medium">${comfortRating}</strong> rank missions.</p>
+                   <p class="text-base font-semibold mt-2">Challenge a <span class="text-brand-400 text-lg ml-1">${comfortRating + 100}</span> target!</p>`
+                : `<p class="text-sm text-slate-500 italic">Complete more missions to unlock your next target tier!</p>`;
         }
         
         // --- Utility Functions ---
         function getVerdictColor(verdict) {
+            // Softened the colors significantly for less eye strain
             const colors = {
-                'Solved': ['#ff6600', 'bg-orange-500/10 text-orange-500 border border-orange-500/30'], // Naruto orange for solved
-                'Not Attempted': ['#4b5563', 'bg-gray-800 text-gray-400 border border-gray-700'],
-                'Attempted but Wrong': ['#dc2626', 'bg-red-500/10 text-red-500 border border-red-500/30'],
-                'WRONG ANSWER': ['#dc2626', 'bg-red-500/10 text-red-500 border border-red-500/30'],
-                'TIME LIMIT EXCEEDED': ['#d97706', 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/30'],
-                'MEMORY LIMIT EXCEEDED': ['#ea580c', 'bg-amber-500/10 text-amber-500 border border-amber-500/30'],
-                'RUNTIME ERROR': ['#7c3aed', 'bg-purple-500/10 text-purple-400 border border-purple-500/30'],
-                'COMPILATION ERROR': ['#db2777', 'bg-pink-500/10 text-pink-400 border border-pink-500/30'],
+                'Solved': ['#f59e0b', 'bg-amber-500/10 text-amber-500 border border-amber-500/20'], // Brand amber
+                'Not Attempted': ['#64748b', 'bg-slate-800 text-slate-400 border border-slate-700'],
+                'Attempted but Wrong': ['#fb7185', 'bg-rose-500/10 text-rose-400 border border-rose-500/20'],
+                'WRONG ANSWER': ['#fb7185', 'bg-rose-500/10 text-rose-400 border border-rose-500/20'],
+                'TIME LIMIT EXCEEDED': ['#fbbf24', 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'],
+                'MEMORY LIMIT EXCEEDED': ['#fdba74', 'bg-orange-500/10 text-orange-400 border border-orange-500/20'],
+                'RUNTIME ERROR': ['#c084fc', 'bg-purple-500/10 text-purple-400 border border-purple-500/20'],
+                'COMPILATION ERROR': ['#f472b6', 'bg-pink-500/10 text-pink-400 border border-pink-500/20'],
             };
             return colors[verdict] || colors['Attempted but Wrong'];
         }
+        
         function getRankColor(rank) {
-            if (!rank) return 'text-gray-500';
-            if (rank.includes('Grandmaster')) return 'text-red-600';
-            if (rank.includes('Master')) return 'text-orange-400';
-            if (rank.includes('Candidate')) return 'text-purple-500';
-            if (rank.includes('Expert')) return 'text-blue-500';
-            if (rank.includes('Specialist')) return 'text-cyan-500';
-            return 'text-green-500';
+            if (!rank) return 'text-slate-500';
+            if (rank.includes('Grandmaster')) return 'text-rose-500';
+            if (rank.includes('Master')) return 'text-amber-500'; // brand
+            if (rank.includes('Candidate')) return 'text-purple-400';
+            if (rank.includes('Expert')) return 'text-blue-400';
+            if (rank.includes('Specialist')) return 'text-teal-400';
+            return 'text-emerald-400';
         }
     </script>
 </body>
