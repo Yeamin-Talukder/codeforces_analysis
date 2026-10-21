@@ -109,8 +109,9 @@
              <!-- Control Panel Full Width -->
             <div class="card p-6 mb-8">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-3">Control Panel</h2>
-                <form id="control-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
-                    <div class="lg:col-span-1"><label for="contest-division" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Division</label><select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white">
+                <form id="control-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div><label for="contest-division" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Division</label><select id="contest-division" name="contest-division" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white">
+                        <option>Any Contest</option>
                         <option>Div. 1</option>
                         <option selected>Only Div. 2</option>
                         <option>All Div. 2</option>
@@ -123,11 +124,13 @@
                         <option>Kotlin</option>
                         <option>VK Cup</option>
                     </select></div>
-                    <div class="lg:col-span-1"><label for="problem-number" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Index</label><select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option></select></div>
-                    <div class="lg:col-span-1"><label for="num-contests" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Problems</label><input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
-                    <div class="lg:col-span-1"><label for="handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Your Handle</label><input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
-                    <div class="lg:col-span-1"><label for="compare-handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Compare Handle</label><input type="text" name="compare-handle" id="compare-handle" placeholder="e.g., Petr" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
-                    <div class="lg:col-span-1 grid grid-cols-2 gap-2"><button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Fetch</button><button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Reset</button></div>
+                    <div><label for="problem-number" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Index</label><select id="problem-number" name="problem-number" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option>Any</option><option>A</option><option>B</option><option>C</option><option selected>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option></select></div>
+                    <div><label for="num-contests" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Problems</label><input type="number" name="num-contests" id="num-contests" value="50" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div><label for="problem-tag" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Search by Tag</label><input type="text" name="problem-tag" id="problem-tag" list="tag-list" autocomplete="off" placeholder="e.g., dp  or  dp, graphs" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"><datalist id="tag-list"></datalist></div>
+                    <div><label for="date-order" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Sort by Contest Date</label><select id="date-order" name="date-order" class="mt-1 block w-full pl-3 pr-10 py-2 text-base rounded-md form-input text-gray-900 dark:text-white"><option value="desc" selected>Newest first</option><option value="asc">Oldest first</option></select></div>
+                    <div><label for="handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Your Handle</label><input type="text" name="handle" id="handle" placeholder="e.g., tourist" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div><label for="compare-handle" class="block text-sm font-medium text-gray-600 dark:text-gray-400">Compare Handle</label><input type="text" name="compare-handle" id="compare-handle" placeholder="e.g., Petr" class="mt-1 block w-full shadow-sm sm:text-sm rounded-md form-input text-gray-900 dark:text-white"></div>
+                    <div class="grid grid-cols-2 gap-2"><button type="submit" id="submit-btn" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Fetch</button><button type="button" id="reset-cache-btn" class="w-full flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-850 focus:ring-indigo-500 transition-colors">Reset</button></div>
                 </form>
             </div>
 
@@ -145,11 +148,13 @@
                     <div class="p-2 sm:p-6">
                         <!-- Filters -->
                         <div id="filters-container" class="mb-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 hidden"><input type="text" id="tag-filter" placeholder="Filter by tag..." class="form-input rounded-md sm:col-span-2 md:col-span-1"><select id="verdict-filter" class="form-input rounded-md"><option value="">All Verdicts</option><option value="Solved">Solved</option><option value="Not Attempted">Not Attempted</option><option value="WRONG ANSWER">Wrong Answer</option></select><input type="number" id="rating-min-filter" placeholder="Min Rating" class="form-input rounded-md"><input type="number" id="rating-max-filter" placeholder="Max Rating" class="form-input rounded-md"></div>
-                        
+
+                        <div id="result-count" class="hidden mb-3 text-sm text-gray-500 dark:text-gray-400"></div>
+
                         <div id="initial-message" class="text-center py-20"><svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><h3 class="mt-2 text-lg font-medium text-gray-900 dark:text-white">Ready to Practice?</h3><p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Enter your handle and fetch problems to begin.</p></div>
                         <div id="loader-container" class="text-center py-20 hidden"><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-4"><div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div></div><p id="progress-text" class="mt-4 text-sm text-gray-500 dark:text-gray-400">Initializing...</p></div>
                         <div id="error-message" class="text-center py-20 hidden"><svg class="mx-auto h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><h3 class="mt-2 text-lg font-medium text-red-500 dark:text-red-400">An Error Occurred</h3><p class="mt-1 text-sm text-red-600 dark:text-red-500" id="error-text"></p></div>
-                        
+
                         <div id="table-container" class="hidden overflow-x-auto">
                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead id="problem-table-head" class="bg-gray-50 dark:bg-gray-800"></thead>
@@ -188,18 +193,23 @@
         const themeToggle = document.getElementById('theme-toggle');
         const themeIconLight = document.getElementById('theme-icon-light');
         const themeIconDark = document.getElementById('theme-icon-dark');
+        const problemTagInput = document.getElementById('problem-tag');
+        const dateOrderSelect = document.getElementById('date-order');
+        const tagListEl = document.getElementById('tag-list');
+        const resultCountEl = document.getElementById('result-count');
 
         // Chart instances
         let charts = {};
-        
+
         // --- App State ---
         let allProblems = [];
         let userData = {};
         let currentProblemSelection = [];
-        
+
         // --- Settings Management ---
         let settings = {
             handle: '', compareHandle: '', division: 'Only Div. 2', problemIndex: 'D', count: 50,
+            searchTag: '', dateOrder: 'desc',
             filters: { tag: '', verdict: '', ratingMin: '', ratingMax: '' },
             sort: { column: 'startTimeSeconds', direction: 'desc' },
             theme: 'dark'
@@ -209,12 +219,14 @@
         const loadSettings = () => {
             const saved = localStorage.getItem('cfDashboardSettings');
             if (saved) settings = { ...settings, ...JSON.parse(saved) };
-            
+
             document.getElementById('handle').value = settings.handle;
             document.getElementById('compare-handle').value = settings.compareHandle;
             document.getElementById('contest-division').value = settings.division;
             document.getElementById('problem-number').value = settings.problemIndex;
             document.getElementById('num-contests').value = settings.count;
+            problemTagInput.value = settings.searchTag || '';
+            dateOrderSelect.value = settings.dateOrder || 'desc';
             Object.keys(settings.filters).forEach(key => {
                 const inputId = `${key.replace('ratingMin', 'rating-min').replace('ratingMax', 'rating-max')}-filter`;
                 const input = document.getElementById(inputId);
@@ -252,12 +264,15 @@
             settings.count = parseInt(document.getElementById('num-contests').value, 10);
             settings.handle = document.getElementById('handle').value.trim();
             settings.compareHandle = document.getElementById('compare-handle').value.trim();
-            
+            settings.searchTag = problemTagInput.value.trim();
+            settings.dateOrder = dateOrderSelect.value;
+
             if (!settings.handle) {
                 showError('Your Handle is required.');
                 return;
             }
-            settings.sort = { column: 'startTimeSeconds', direction: 'desc' };
+            // Table starts sorted by contest date, in the direction chosen in the control panel
+            settings.sort = { column: 'startTimeSeconds', direction: settings.dateOrder };
             saveSettings();
             await fetchData();
         });
@@ -274,7 +289,7 @@
             document.body.appendChild(modal);
             setTimeout(() => modal.remove(), 1500);
         });
-        
+
         const addSortListeners = () => {
              document.querySelectorAll('.sortable').forEach(header => {
                 header.addEventListener('click', () => {
@@ -309,6 +324,20 @@
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
 
+        // Every comma-separated term must match (as a substring) at least one tag of the problem.
+        function matchesSearchTags(problem, searchTagString) {
+            const terms = searchTagString.toLowerCase().split(',').map(t => t.trim()).filter(Boolean);
+            if (terms.length === 0) return true;
+            const tags = (problem.tags || []).map(t => t.toLowerCase());
+            return terms.every(term => tags.some(tag => tag.includes(term)));
+        }
+
+        function populateTagList() {
+            const tagSet = new Set();
+            allProblems.forEach(p => (p.tags || []).forEach(t => tagSet.add(t)));
+            tagListEl.innerHTML = Array.from(tagSet).sort().map(t => `<option value="${t}"></option>`).join('');
+        }
+
         // --- UI State Functions ---
         function showLoading() {
             submitBtn.disabled = true;
@@ -319,10 +348,11 @@
             analyticsUser1.classList.add('hidden');
             analyticsUser2.classList.add('hidden');
             filtersContainer.classList.add('hidden');
+            resultCountEl.classList.add('hidden');
             miniProfileContainer.innerHTML = '';
             loaderContainer.classList.remove('hidden');
         }
-        
+
         function updateProgress(value, text) { progressBar.style.width = `${value}%`; progressText.textContent = text; }
         function showSuccess() {
             submitBtn.disabled = false;
@@ -332,6 +362,7 @@
             analyticsUser1.classList.remove('hidden');
             if (settings.compareHandle) analyticsUser2.classList.remove('hidden');
             filtersContainer.classList.remove('hidden');
+            resultCountEl.classList.remove('hidden');
         }
         function showError(message) {
             submitBtn.disabled = false;
@@ -353,12 +384,12 @@
             }
             const response = await fetch(url).then(res => res.json());
             if (response.status !== 'OK') throw new Error(response.comment);
-            
+
             const dataToCache = transformFn ? transformFn(response.result) : response.result;
-            
-            try { 
-                localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data: dataToCache })); 
-            } catch (e) { 
+
+            try {
+                localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data: dataToCache }));
+            } catch (e) {
                 console.warn("Storage Quota Exceeded. Clearing old intel to make space...");
                 for (let i = localStorage.length - 1; i >= 0; i--) {
                     const k = localStorage.key(i);
@@ -372,7 +403,7 @@
             }
             return dataToCache;
         }
-        
+
         async function fetchUserData(handle, progressStart, progressEnd) {
             const day = 24 * 60 * 60 * 1000;
             const tenMins = 10 * 60 * 1000;
@@ -380,8 +411,8 @@
             const userInfo = (await fetchFromCacheOrApi(`cf_user_${handle}`, `https://codeforces.com/api/user.info?handles=${handle}`, day))[0];
             updateProgress(progressStart + (progressEnd - progressStart) / 2, `Fetching submissions for ${handle}...`);
             const submissions = await fetchFromCacheOrApi(
-                `cf_submissions_${handle}`, 
-                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=10000`, 
+                `cf_submissions_${handle}`,
+                `https://codeforces.com/api/user.status?handle=${handle}&from=1&count=10000`,
                 tenMins,
                 (data) => data.map(sub => ({
                     problem: { contestId: sub.problem.contestId, index: sub.problem.index },
@@ -395,7 +426,7 @@
         async function fetchData() {
             showLoading();
             const day = 24 * 60 * 60 * 1000;
-            
+
             try {
                 updateProgress(5, 'Fetching global data...');
                 const contestList = await fetchFromCacheOrApi('cf_contests', 'https://codeforces.com/api/contest.list', day);
@@ -408,13 +439,13 @@
                         rating: p.rating
                     }))
                 }));
-                
+
                 const handles = [settings.handle];
                 if(settings.compareHandle) handles.push(settings.compareHandle);
 
                 const userPromises = handles.map((h, i) => fetchUserData(h, 20 + i*40, 60 + i*40));
                 const results = await Promise.all(userPromises);
-                
+
                 handles.forEach((h, i) => userData[h] = results[i]);
 
                 updateProgress(95, 'Processing data...');
@@ -429,14 +460,15 @@
                         startTimeSeconds: contest.startTimeSeconds
                     }
                 }).filter(p => p !== null);
-                
+
+                populateTagList();
                 processAndRenderData();
             } catch (err) {
                 console.error(err);
                 showError(err.message);
             }
         }
-        
+
         function processAndRenderData() {
             Object.keys(userData).forEach(handle => {
                 const submissionMap = new Map();
@@ -461,8 +493,10 @@
                 const contestName = p.contestName.toLowerCase();
                 const division = settings.division.toLowerCase();
                 let contestMatch = false;
-                
-                if (division === 'all div. 2') {
+
+                if (division === 'any contest') {
+                    contestMatch = true;
+                } else if (division === 'all div. 2') {
                     contestMatch = contestName.includes('div. 2');
                 } else if (division === 'only div. 2') {
                     contestMatch = contestName.includes('div. 2') && !contestName.includes('div. 1') && !contestName.includes('educational');
@@ -471,20 +505,34 @@
                 } else {
                     contestMatch = contestName.includes(division);
                 }
-                
-                return p.index === settings.problemIndex && contestMatch;
+
+                const indexMatch = settings.problemIndex === 'Any' || p.index === settings.problemIndex;
+
+                // Tag search is applied BEFORE limiting to "Problems" count, so you get
+                // the N newest (or oldest) problems of that tag, not just a filtered slice.
+                return indexMatch && contestMatch && matchesSearchTags(p, settings.searchTag || '');
             });
-            
-            currentProblemSelection = filteredProblems.slice(0, settings.count);
+
+            // Order by contest date first, so the "Problems" limit keeps the newest/oldest ones.
+            const dir = settings.dateOrder === 'asc' ? 1 : -1;
+            filteredProblems.sort((a, b) => {
+                const diff = (a.startTimeSeconds || 0) - (b.startTimeSeconds || 0);
+                if (diff !== 0) return diff * dir;
+                // Same contest: keep A, B, C... order
+                return a.index.localeCompare(b.index) * dir;
+            });
+
+            const limit = Number.isFinite(settings.count) && settings.count > 0 ? settings.count : filteredProblems.length;
+            currentProblemSelection = filteredProblems.slice(0, limit);
 
             renderUI();
             showSuccess();
             updateProgress(100, 'Done!');
         }
-        
+
         function renderUI() {
             miniProfileContainer.innerHTML = '';
-            
+
             if (settings.compareHandle) {
                 analyticsGrid.className = 'grid lg:grid-cols-2 gap-8';
                 renderMiniProfile(settings.handle, miniProfileContainer);
@@ -498,7 +546,7 @@
                  analyticsUser2.innerHTML = '';
                  analyticsUser2.classList.add('hidden');
             }
-            
+
             renderTableHead();
             applyFiltersAndRender();
         }
@@ -514,16 +562,19 @@
                        (!ratingMax || (p.rating || 0) <= parseInt(ratingMax, 10));
             });
             sortAndRenderProblems(filtered);
+
+            const tagInfo = settings.searchTag ? ` for tag "${settings.searchTag}"` : '';
+            resultCountEl.textContent = `Showing ${filtered.length} problem${filtered.length === 1 ? '' : 's'}${tagInfo}`;
         }
 
         function sortAndRenderProblems(problems) {
             const { column, direction } = settings.sort;
             problems.sort((a, b) => {
                 let valA, valB;
-                if (column === 'verdict') { 
-                    valA = (userData[settings.handle].submissionMap.get(`${a.contestId}-${a.index}`) || {}).verdict || 'Not Attempted'; 
-                    valB = (userData[settings.handle].submissionMap.get(`${b.contestId}-${b.index}`) || {}).verdict || 'Not Attempted'; 
-                } 
+                if (column === 'verdict') {
+                    valA = (userData[settings.handle].submissionMap.get(`${a.contestId}-${a.index}`) || {}).verdict || 'Not Attempted';
+                    valB = (userData[settings.handle].submissionMap.get(`${b.contestId}-${b.index}`) || {}).verdict || 'Not Attempted';
+                }
                 else { valA = a[column]; valB = b[column]; }
                 if (valA < valB) return direction === 'asc' ? -1 : 1;
                 if (valA > valB) return direction === 'asc' ? 1 : -1;
@@ -541,7 +592,7 @@
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="name"><div class="flex items-center">Problem<span class="ml-2 sort-icon"></span></div></th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tags</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider sortable cursor-pointer" data-sort="rating"><div class="flex items-center">Rating<span class="ml-2 sort-icon"></span></div></th>`;
-            
+
             if (settings.compareHandle) {
                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">${settings.handle}</th>`;
                 headHTML += `<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">${settings.compareHandle}</th>`;
@@ -555,17 +606,17 @@
         }
 
         function renderProblemTable(problems) {
-            problemTableBody.innerHTML = problems.length === 0 
+            problemTableBody.innerHTML = problems.length === 0
                 ? `<tr><td colspan="6" class="text-center py-10 text-gray-500 dark:text-gray-400">No problems found matching your criteria.</td></tr>`
                 : problems.map(p => {
                     const tagsHTML = (p.tags || []).map(tag => `<span class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 mr-2 mb-1 clickable-tag" onclick="setTagFilter('${tag}')">${tag}</span>`).join('');
                     const contestDate = formatDate(p.startTimeSeconds);
-                    
+
                     let verdictHTML = '';
                     if (settings.compareHandle) {
                         const v1Obj = userData[settings.handle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
                         const v2Obj = userData[settings.compareHandle].submissionMap.get(`${p.contestId}-${p.index}`) || {verdict: 'Not Attempted'};
-                        
+
                         verdictHTML = `<td class="px-6 py-4 whitespace-nowrap text-sm font-semibold">
                                           <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getVerdictColor(v1Obj.verdict)[1]}">${v1Obj.verdict}</span>
                                           ${v1Obj.solvedDate ? `<div class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">${formatDate(v1Obj.solvedDate)}</div>` : ''}
@@ -587,14 +638,14 @@
                                     <div class="font-medium">${p.contestName}</div>
                                     <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">${contestDate}</div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">${p.name}</a></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm"><a href="https://codeforces.com/problemset/problem/${p.contestId}/${p.index}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">${p.index}. ${p.name}</a></td>
                                 <td class="px-6 py-4 whitespace-normal text-sm max-w-xs">${tagsHTML}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">${p.rating || 'N/A'}</td>
                                 ${verdictHTML}
                             </tr>`;
                 }).join('');
         }
-        
+
         function setTagFilter(tag) { tagFilterInput.value = tag; settings.filters.tag = tag.toLowerCase(); saveSettings(); applyFiltersAndRender(); }
         function updateSortIcons() {
             document.querySelectorAll('.sortable').forEach(header => {
@@ -647,7 +698,7 @@
                     <div class="mt-6"><h3 class="font-semibold text-gray-900 dark:text-white mb-2">Tag Mastery</h3><div id="tag-mastery-container-${idSuffix}" class="space-y-2 overflow-y-auto max-h-48 pr-2"></div></div>
                 </div>
             `;
-            
+
             renderVerdictPieChart(currentProblemSelection, userSubmissionMap, `verdict-pie-chart-${idSuffix}`, `verdict-details-${idSuffix}`);
             renderRatingDistributionChart(userSubmissions, `rating-distribution-chart-${idSuffix}`);
             renderRatingBreakdownTable(currentProblemSelection, userSubmissionMap, `rating-breakdown-container-${idSuffix}`);
@@ -684,7 +735,7 @@
                 return `<div class="flex justify-between items-center text-sm"><span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: ${colorHex};"></span><span class="font-medium">${verdict}</span></span><span class="font-bold">${count}</span></div>`;
             }).join('');
         }
-        
+
         function renderRatingDistributionChart(submissions, chartId) {
             const solvedByRating = {};
             submissions.forEach(sub => {
@@ -737,7 +788,7 @@
             `;
             document.getElementById(containerId).innerHTML = tableHTML;
         }
-        
+
         function renderTagMastery(problems, submissionMap, containerId) {
             const tagData = {};
             problems.forEach(p => (p.tags || []).forEach(tag => {
@@ -786,7 +837,7 @@
                 ? `<p class="text-sm text-gray-600 dark:text-gray-400">You solve >60% of <strong class="text-gray-900 dark:text-white">${comfortRating}</strong>s. Try <strong class="text-indigo-600 dark:text-indigo-400">${comfortRating + 100}</strong> problems next!</p>`
                 : `<p class="text-sm text-gray-600 dark:text-gray-400">Solve more to get a suggestion!</p>`;
         }
-        
+
         // --- Utility Functions ---
         function getVerdictColor(verdict) {
             const colors = {
